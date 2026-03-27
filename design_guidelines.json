@@ -1,0 +1,94 @@
+{
+  "theme": "LIGHT (with Dark Mode Support)",
+  "archetype": "4 (Swiss & High-Contrast - Modified for Enterprise Banking)",
+  "emotional_tone": "Professional, premium, secure, trustworthy, executive-friendly",
+  "typography": {
+    "headings": {
+      "family": "Outfit, sans-serif",
+      "weights": ["500", "600", "700"],
+      "classes": "font-sans tracking-tight text-slate-900 dark:text-slate-50"
+    },
+    "body": {
+      "family": "IBM Plex Sans, sans-serif",
+      "weights": ["400", "500"],
+      "classes": "font-sans text-slate-600 dark:text-slate-400"
+    },
+    "mono": {
+      "family": "IBM Plex Mono, monospace",
+      "usage": "Data tables, financial numbers, account IDs, and metric widgets"
+    }
+  },
+  "colors": {
+    "background": {
+      "light": "#F8FAFC", 
+      "dark": "#0B0F19"
+    },
+    "card": {
+      "light": "#FFFFFF",
+      "dark": "#111827"
+    },
+    "primary": {
+      "light": "#0F172A", 
+      "dark": "#F8FAFC"
+    },
+    "accent_blue": "#3B82F6",
+    "accent_cyan": "#06B6D4",
+    "success": "#10B981",
+    "warning": "#F59E0B",
+    "danger": "#EF4444",
+    "chart_palette": ["#3B82F6", "#06B6D4", "#6366F1", "#10B981", "#8B5CF6"]
+  },
+  "layout_spacing": {
+    "grid_pattern": "Control Room Grid (Dense but readable). Maximize pixel utilization without feeling cluttered.",
+    "dashboard_gap": "gap-4 md:gap-6",
+    "card_padding": "p-5 md:p-6",
+    "border_radius": "rounded-xl"
+  },
+  "components": {
+    "cards": "Clean white background, subtle border (border-slate-200), soft ambient shadow (shadow-sm). No heavy drop shadows. Keep edges crisp.",
+    "tables": "Dense but highly legible. Use tabular-nums or IBM Plex Mono for numeric columns. Left-aligned text, right-aligned numbers. Subtle row hover effects.",
+    "sidebar": "Collapsible left sidebar for global navigation. Use a dark navy background (#0F172A) with white text to anchor the application visually, creating a 'command center' feel.",
+    "topbar": "Sticky header (z-50) with glassmorphism (backdrop-blur-xl bg-white/80) in light mode to maintain context while scrolling.",
+    "charts": "Use Recharts. Implement custom styled tooltips matching card aesthetics. Muted grid lines. Distinct, color-blind friendly palettes using accent blues and cyans."
+  },
+  "motion": {
+    "hover": "Subtle card lift (-translate-y-0.5) and shadow increase. Smooth background color transitions on interactive elements.",
+    "page_transitions": "Simple 0.2s fade-in for the main content area when switching routes to ensure an immediate, snappy enterprise feel."
+  },
+  "media": {
+    "image_urls": [
+      {
+        "category": "user_avatar_female",
+        "url": "https://images.unsplash.com/photo-1655249481446-25d575f1c054?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NDh8MHwxfHNlYXJjaHw0fHxwcm9mZXNzaW9uYWwlMjBidXNpbmVzcyUyMHBvcnRyYWl0JTIwaGVhZHNob3R8ZW58MHx8fHwxNzc0NTc0OTMwfDA&ixlib=rb-4.1.0&q=85",
+        "description": "Executive avatar (female)"
+      },
+      {
+        "category": "user_avatar_male",
+        "url": "https://images.pexels.com/photos/14589344/pexels-photo-14589344.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "description": "Executive avatar (male)"
+      },
+      {
+        "category": "login_background",
+        "url": "https://images.unsplash.com/photo-1614088449375-406d980a2987?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NDh8MHwxfHNlYXJjaHwxfHxhYnN0cmFjdCUyMGdlb21ldHJpYyUyMGJsdWUlMjBtaW5pbWFsJTIwYmFja2dyb3VuZHxlbnwwfHx8fDE3NzQ1NzQ5Mzd8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Abstract geometric blue background for login page split screen"
+      }
+    ],
+    "icons": "Use lucide-react. For the fictional bank logo, DO NOT use a placeholder image. Instead, compose it using a Lucide icon (e.g., Landmark or ShieldCheck) alongside crisp typography (e.g., 'NexusBank')."
+  },
+  "accessibility": {
+    "contrast": "Ensure minimum 4.5:1 ratio for text. Text over primary solid buttons must be pure white. Avoid pale gray text on white backgrounds.",
+    "testing_ids": "Apply 'data-testid' to ALL interactive elements, links, tabs, and critical metric wrappers."
+  },
+  "instructions_to_main_agent": [
+    "You are building a BI Dashboard for a retail bank. Tone is serious, enterprise, premium. Avoid playful shapes or extreme neon colors.",
+    "10 screens required: Login Page, Executive Dashboard, Deposit & CASA, Lending, Customer 360, Branch Performance, Digital Channel, Risk/Collections, Report Center, Navigation.",
+    "Implement simulated login flow leading into the dashboard layout.",
+    "For charts, strictly use Recharts. Ensure charts have ResponsiveContainer wrappers to fit grid items dynamically.",
+    "Add Dark Mode toggle and an 'Export to PDF' mock action button in the topbar or report center.",
+    "Use standard tailwind utility classes. Do not invent custom CSS unless absolutely necessary.",
+    "Integrate Google Fonts: 'Outfit' for all Headings, 'IBM Plex Sans' for Body, 'IBM Plex Mono' for tabular data and KPIs.",
+    "Apply data-testid rigorously to all buttons, links, inputs, and chart wrappers to support automated testing.",
+    "Build a robust DashboardLayout containing the Sidebar and Topbar, rendering specific dashboard views inside an Outlet or children wrapper.",
+    "Make sure grid items align perfectly and utilize full height where necessary to avoid jagged bottoms in the control-room style layout."
+  ]
+}
