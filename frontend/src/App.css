@@ -1,34 +1,55 @@
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
+.font-heading {
+  font-family: 'Outfit', sans-serif;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
+.font-body {
+  font-family: 'IBM Plex Sans', sans-serif;
 }
 
-.App-header {
-    background-color: #0f0f10;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
+.font-mono {
+  font-family: 'IBM Plex Mono', monospace;
 }
 
-.App-link {
-    color: #61dafb;
+/* Additional utilities */
+.card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.glass {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Animation utilities */
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Sidebar collapsed state handling */
+.sidebar-collapsed .sidebar-text {
+  display: none;
+}
+
+/* Chart container styling */
+.recharts-wrapper {
+  font-family: 'IBM Plex Sans', sans-serif;
+}
+
+.recharts-text {
+  fill: currentColor;
+}
+
+/* Table numeric alignment */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
 }
