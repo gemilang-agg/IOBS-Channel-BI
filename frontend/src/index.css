@@ -186,3 +186,27 @@ code {
     display: contents !important;
   }
 }
+
+/* Hide Emergent badge */
+[style*="Made with Emergent"],
+p[style*="white-space: nowrap"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+/* Hide badge container */
+div[style*="position: fixed"][style*="bottom"],
+div[style*="z-index: 2147483647"],
+div[style*="bottom: 16px"][style*="right: 16px"],
+div[style*="bottom"][style*="right"][style*="fixed"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Target Emergent watermark specifically */
+body > div[style*="position: fixed"]:last-of-type {
+  display: none !important;
+}
