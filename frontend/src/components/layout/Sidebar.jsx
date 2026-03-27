@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '../../lib/utils';
+import { useLogo } from '../../context/LogoContext';
 
 const menuItems = [
   { path: '/dashboard', label: 'Executive', icon: LayoutDashboard },
@@ -29,6 +30,7 @@ const menuItems = [
 
 export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
+  const { customLogo } = useLogo();
 
   return (
     <aside 
@@ -43,12 +45,20 @@ export function Sidebar() {
         "flex items-center h-16 px-4 border-b border-slate-700/50",
         collapsed ? "justify-center" : "gap-3"
       )}>
-        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center flex-shrink-0">
-          <Landmark className="w-5 h-5 text-white" />
-        </div>
+        {customLogo ? (
+          <img 
+            src={customLogo} 
+            alt="Logo" 
+            className="w-8 h-8 rounded-lg object-cover flex-shrink-0"
+          />
+        ) : (
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center flex-shrink-0">
+            <Landmark className="w-5 h-5 text-white" />
+          </div>
+        )}
         {!collapsed && (
           <div className="overflow-hidden">
-            <h1 className="font-heading font-bold text-lg text-white tracking-tight">NexusBank</h1>
+            <h1 className="font-heading font-bold text-lg text-white tracking-tight">Channel BI</h1>
             <p className="text-[10px] text-slate-400 uppercase tracking-wider">Intelligence Platform</p>
           </div>
         )}

@@ -4,12 +4,12 @@ const ThemeContext = createContext();
 
 export function ThemeProvider({ children }) {
   const [isDarkMode, setIsDarkMode] = useState(() => {
-    const saved = localStorage.getItem('nexusbank-theme');
+    const saved = localStorage.getItem('channelbi-theme');
     return saved ? saved === 'dark' : false;
   });
 
   useEffect(() => {
-    localStorage.setItem('nexusbank-theme', isDarkMode ? 'dark' : 'light');
+    localStorage.setItem('channelbi-theme', isDarkMode ? 'dark' : 'light');
     if (isDarkMode) {
       document.documentElement.classList.add('dark');
     } else {

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { Landmark, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useLogo } from '../context/LogoContext';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -16,6 +17,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   
   const { login, isAuthenticated } = useAuth();
+  const { customLogo } = useLogo();
   const navigate = useNavigate();
 
   if (isAuthenticated) {
@@ -62,11 +64,15 @@ export default function LoginPage() {
         <div className="relative z-10 flex flex-col justify-center px-16 text-white">
           {/* Logo */}
           <div className="flex items-center gap-3 mb-12">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center">
-              <Landmark className="w-7 h-7 text-white" />
-            </div>
+            {customLogo ? (
+              <img src={customLogo} alt="Logo" className="w-12 h-12 rounded-xl object-cover" />
+            ) : (
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center">
+                <Landmark className="w-7 h-7 text-white" />
+              </div>
+            )}
             <div>
-              <h1 className="font-heading font-bold text-2xl tracking-tight">NexusBank</h1>
+              <h1 className="font-heading font-bold text-2xl tracking-tight">Channel BI</h1>
               <p className="text-xs text-slate-400 uppercase tracking-wider">Intelligence Platform</p>
             </div>
           </div>
@@ -120,11 +126,15 @@ export default function LoginPage() {
         <div className="w-full max-w-md">
           {/* Mobile Logo */}
           <div className="flex items-center gap-3 mb-8 lg:hidden">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center">
-              <Landmark className="w-6 h-6 text-white" />
-            </div>
+            {customLogo ? (
+              <img src={customLogo} alt="Logo" className="w-10 h-10 rounded-xl object-cover" />
+            ) : (
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center">
+                <Landmark className="w-6 h-6 text-white" />
+              </div>
+            )}
             <div>
-              <h1 className="font-heading font-bold text-xl text-slate-900 dark:text-white">NexusBank</h1>
+              <h1 className="font-heading font-bold text-xl text-slate-900 dark:text-white">Channel BI</h1>
               <p className="text-xs text-slate-500 uppercase tracking-wider">Intelligence Platform</p>
             </div>
           </div>
@@ -152,7 +162,7 @@ export default function LoginPage() {
               <Input
                 id="email"
                 type="email"
-                placeholder="name@nexusbank.com"
+                placeholder="name@channelbi.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="h-11"
@@ -232,7 +242,7 @@ export default function LoginPage() {
               variant="outline" 
               className="w-full h-11 gap-2"
               onClick={() => {
-                login('sso.user@nexusbank.com', 'sso');
+                login('sso.user@channelbi.com', 'sso');
                 navigate('/dashboard');
               }}
               data-testid="sso-login-btn"
