@@ -62,16 +62,16 @@ export default function RiskDashboard() {
     { key: 'par30', label: 'PAR 30 %', type: 'percent', align: 'right' },
     { key: 'provision', label: 'Provision %', type: 'percent', align: 'right' },
     { 
-      key: 'npl', 
+      key: 'status', 
       label: 'Status', 
       align: 'center',
-      render: (value) => (
+      render: (_, row) => (
         <Badge className={cn(
-          value <= 2 ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400" :
-          value <= 3 ? "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400" :
+          row.npl <= 2 ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400" :
+          row.npl <= 3 ? "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400" :
           "bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400"
         )}>
-          {value <= 2 ? 'Low Risk' : value <= 3 ? 'Medium' : 'High Risk'}
+          {row.npl <= 2 ? 'Low Risk' : row.npl <= 3 ? 'Medium' : 'High Risk'}
         </Badge>
       )
     }
