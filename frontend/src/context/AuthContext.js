@@ -1,12 +1,40 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
-    const saved = localStorage.getItem('nexusbank-user');
-    return saved ? JSON.parse(saved) : null;
+    try {
+      const saved = localStorage.getItem('nexusbank-user');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        // Validate that parsed data has required fields
+        if (parsed && parsed.email && parsed.name) {
+          return parsed;
+        }
+      }
+    } catch (e) {
+      console.error('Error parsing stored user:', e);
+      localStorage.removeItem('nexusbank-user');
+    }
+    return null;
   });
+
+  // Sync state with localStorage on changes
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (e.key === 'nexusbank-user') {
+        try {
+          const newUser = e.newValue ? JSON.parse(e.newValue) : null;
+          setUser(newUser);
+        } catch (err) {
+          setUser(null);
+        }
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
   const login = (email, password) => {
     // Simulated login - accept any credentials
