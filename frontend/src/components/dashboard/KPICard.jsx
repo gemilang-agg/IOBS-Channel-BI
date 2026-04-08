@@ -14,9 +14,13 @@ export function KPICard({
   const isNegativeGood = label.toLowerCase().includes('delinquency') || 
                          label.toLowerCase().includes('complaint') ||
                          label.toLowerCase().includes('dormant') ||
-                         label.toLowerCase().includes('failed');
+                         label.toLowerCase().includes('failed') ||
+                         label.toLowerCase().includes('cost of funds') ||
+                         label.toLowerCase().includes('par') ||
+                         label.toLowerCase().includes('npl') ||
+                         label.toLowerCase().includes('churn');
   
-  // For metrics where "down" is good (like complaints, delinquency)
+  // For metrics where "down" is good (like complaints, delinquency, cost of funds)
   const displayColor = isNegativeGood 
     ? (isPositive ? 'text-red-500' : 'text-emerald-500')
     : (isPositive ? 'text-emerald-500' : 'text-red-500');
