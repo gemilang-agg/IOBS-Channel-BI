@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { Bell, Shield, Palette, Database, Users, Upload, X, ImageIcon, Landmark } from 'lucide-react';
+import { Bell, Shield, Palette, Database, Users, Upload, X, ImageIcon, Landmark, Download } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Switch } from '../components/ui/switch';
 import { Label } from '../components/ui/label';
@@ -237,7 +237,7 @@ export default function SettingsPage() {
             </div>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <div className="p-4 rounded-lg bg-slate-50 dark:bg-slate-800/50">
               <p className="text-sm text-slate-500 mb-1">Last Data Refresh</p>
               <p className="font-mono font-medium text-slate-900 dark:text-white">2024-01-21 09:45</p>
@@ -249,6 +249,83 @@ export default function SettingsPage() {
             <div className="p-4 rounded-lg bg-slate-50 dark:bg-slate-800/50">
               <p className="text-sm text-slate-500 mb-1">Data Sources</p>
               <p className="font-mono font-medium text-slate-900 dark:text-white">12 Connected</p>
+            </div>
+          </div>
+
+          <div className="border-t border-slate-100 dark:border-slate-800 pt-6">
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-4">Export Options</h3>
+            <div className="flex flex-wrap gap-3">
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  const schema = {
+                    version: "1.0.0",
+                    generated: new Date().toISOString(),
+                    tables: [
+                      { name: "deposits", columns: ["id", "account_id", "balance", "type", "branch_id", "created_at"] },
+                      { name: "loans", columns: ["id", "customer_id", "amount", "product_type", "status", "disbursement_date"] },
+                      { name: "customers", columns: ["id", "name", "segment", "region", "products_held", "created_at"] },
+                      { name: "branches", columns: ["id", "name", "region", "manager_id", "target", "actual"] },
+                      { name: "transactions", columns: ["id", "account_id", "channel", "amount", "type", "timestamp"] },
+                      { name: "collections", columns: ["id", "loan_id", "dpd_bucket", "amount_due", "collector_id", "status"] }
+                    ],
+                    relationships: [
+                      { from: "deposits.account_id", to: "customers.id" },
+                      { from: "loans.customer_id", to: "customers.id" },
+                      { from: "branches.manager_id", to: "users.id" },
+                      { from: "transactions.account_id", to: "deposits.account_id" },
+                      { from: "collections.loan_id", to: "loans.id" }
+                    ]
+                  };
+                  const blob = new Blob([JSON.stringify(schema, null, 2)], { type: 'application/json' });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = 'channelbi_database_schema.json';
+                  a.click();
+                  URL.revokeObjectURL(url);
+                }}
+                data-testid="download-schema-btn"
+              >
+                <Download className="w-4 h-4 mr-2" />
+                Download Database Schema
+              </Button>
+              <Button 
+                variant="outline"
+                onClick={() => {
+                  const dataSources = {
+                    version: "1.0.0",
+                    generated: new Date().toISOString(),
+                    sources: [
+                      { id: 1, name: "Core Banking System", type: "Oracle", status: "Connected", tables: 24, lastSync: "2024-01-21 09:45" },
+                      { id: 2, name: "Loan Management System", type: "PostgreSQL", status: "Connected", tables: 18, lastSync: "2024-01-21 09:42" },
+                      { id: 3, name: "CRM Database", type: "Salesforce", status: "Connected", tables: 12, lastSync: "2024-01-21 09:30" },
+                      { id: 4, name: "Mobile Banking API", type: "REST API", status: "Connected", tables: 8, lastSync: "2024-01-21 09:45" },
+                      { id: 5, name: "Internet Banking", type: "MySQL", status: "Connected", tables: 15, lastSync: "2024-01-21 09:40" },
+                      { id: 6, name: "ATM Network", type: "SQL Server", status: "Connected", tables: 6, lastSync: "2024-01-21 09:35" },
+                      { id: 7, name: "Card Management", type: "Oracle", status: "Connected", tables: 10, lastSync: "2024-01-21 09:38" },
+                      { id: 8, name: "Branch Operations", type: "PostgreSQL", status: "Connected", tables: 14, lastSync: "2024-01-21 09:44" },
+                      { id: 9, name: "Collections System", type: "MySQL", status: "Connected", tables: 8, lastSync: "2024-01-21 09:41" },
+                      { id: 10, name: "Risk Analytics", type: "Snowflake", status: "Connected", tables: 20, lastSync: "2024-01-21 09:43" },
+                      { id: 11, name: "Customer Service", type: "Zendesk API", status: "Connected", tables: 5, lastSync: "2024-01-21 09:30" },
+                      { id: 12, name: "Regulatory Reporting", type: "Data Warehouse", status: "Connected", tables: 30, lastSync: "2024-01-21 09:00" }
+                    ],
+                    totalTables: 170,
+                    refreshInterval: "15 minutes"
+                  };
+                  const blob = new Blob([JSON.stringify(dataSources, null, 2)], { type: 'application/json' });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = 'channelbi_data_sources.json';
+                  a.click();
+                  URL.revokeObjectURL(url);
+                }}
+                data-testid="download-datasources-btn"
+              >
+                <Download className="w-4 h-4 mr-2" />
+                Download Data Sources
+              </Button>
             </div>
           </div>
         </div>
