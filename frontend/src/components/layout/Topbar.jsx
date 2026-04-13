@@ -43,18 +43,18 @@ export function Topbar() {
 
   return (
     <header 
-      className="sticky top-0 z-30 h-16 border-b border-slate-200 dark:border-slate-700/50 bg-white/80 dark:bg-slate-900/80 glass"
+      className="sticky top-0 z-30 h-16 kiosk-sm:h-20 kiosk:h-24 border-b border-slate-200 dark:border-slate-700/50 bg-white/80 dark:bg-slate-900/80 glass"
       data-testid="topbar"
     >
-      <div className="flex items-center justify-between h-full px-6">
+      <div className="flex items-center justify-between h-full px-6 kiosk-sm:px-8 kiosk:px-10">
         {/* Left Section - Search & Filters */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 kiosk-sm:gap-5 kiosk:gap-6">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 kiosk-sm:w-5 kiosk-sm:h-5 text-slate-400" />
             <Input
               type="search"
               placeholder="Search dashboards, reports..."
-              className="w-72 pl-10 bg-slate-100 dark:bg-slate-800 border-0 focus-visible:ring-blue-500"
+              className="w-72 kiosk-sm:w-80 kiosk:w-96 pl-10 kiosk-sm:pl-12 kiosk-sm:h-12 kiosk:h-14 kiosk-sm:text-base kiosk:text-lg bg-slate-100 dark:bg-slate-800 border-0 focus-visible:ring-blue-500"
               data-testid="global-search"
             />
           </div>

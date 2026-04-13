@@ -7,6 +7,11 @@ module.exports = {
   ],
   theme: {
   	extend: {
+  		screens: {
+  			'kiosk': '2820px',
+  			'kiosk-sm': '1920px', 
+  			'kiosk-md': '2560px',
+  		},
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',

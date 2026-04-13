@@ -73,21 +73,21 @@ export default function ExecutiveDashboard() {
   ];
 
   return (
-    <div className="space-y-6" data-testid="executive-dashboard">
+    <div className="space-y-6 kiosk-sm:space-y-8 kiosk:space-y-10" data-testid="executive-dashboard">
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-heading text-2xl font-bold text-slate-900 dark:text-white">
+          <h1 className="font-heading text-2xl kiosk-sm:text-3xl kiosk:text-4xl font-bold text-slate-900 dark:text-white">
             Executive Dashboard
           </h1>
-          <p className="text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-slate-500 dark:text-slate-400 mt-1 kiosk-sm:text-lg kiosk:text-xl">
             Real-time overview of retail banking performance
           </p>
         </div>
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 kiosk-sm:gap-5 kiosk:gap-6">
         {Object.entries(executiveKPIs).map(([key, kpi]) => (
           <KPICard
             key={key}
@@ -98,13 +98,13 @@ export default function ExecutiveDashboard() {
       </div>
 
       {/* Charts Row 1 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 kiosk-sm:gap-8 kiosk:gap-10">
         {/* Deposit Growth Trend */}
         <ChartCard 
           title="Deposit Growth Trend" 
           subtitle="CASA vs Time Deposits"
         >
-          <div className="h-72">
+          <div className="h-72 kiosk-sm:h-80 kiosk:h-96">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={depositTrendData}>
                 <defs>
@@ -160,7 +160,7 @@ export default function ExecutiveDashboard() {
           title="Loan Portfolio Trend" 
           subtitle="Disbursement & Outstanding"
         >
-          <div className="h-72">
+          <div className="h-72 kiosk-sm:h-80 kiosk:h-96">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={loanTrendData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" vertical={false} />
@@ -214,13 +214,13 @@ export default function ExecutiveDashboard() {
       </div>
 
       {/* Charts Row 2 */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 kiosk-sm:gap-8 kiosk:gap-10">
         {/* Revenue by Product */}
         <ChartCard 
           title="Revenue by Product" 
           subtitle="Current period distribution"
         >
-          <div className="h-64">
+          <div className="h-64 kiosk-sm:h-72 kiosk:h-80">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -260,7 +260,7 @@ export default function ExecutiveDashboard() {
           subtitle="Deposits & Loans by Region"
           className="lg:col-span-2"
         >
-          <div className="h-64">
+          <div className="h-64 kiosk-sm:h-72 kiosk:h-80">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={regionPerformance} layout="vertical">
                 <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" horizontal={false} />
@@ -290,7 +290,7 @@ export default function ExecutiveDashboard() {
       </div>
 
       {/* Bottom Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 kiosk-sm:gap-8 kiosk:gap-10">
         {/* Region Performance Table */}
         <DataTable
           title="Regional Performance Summary"

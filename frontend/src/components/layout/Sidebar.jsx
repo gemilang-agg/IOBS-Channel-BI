@@ -36,30 +36,30 @@ export function Sidebar() {
     <aside 
       className={cn(
         "fixed left-0 top-0 h-screen bg-slate-900 text-white z-40 transition-all duration-300 flex flex-col",
-        collapsed ? "w-16" : "w-64"
+        collapsed ? "w-16 kiosk-sm:w-20 kiosk:w-24" : "w-64 kiosk-sm:w-72 kiosk:w-80"
       )}
       data-testid="sidebar"
     >
       {/* Logo */}
       <div className={cn(
-        "flex items-center h-16 px-4 border-b border-slate-700/50",
+        "flex items-center h-16 kiosk-sm:h-20 kiosk:h-24 px-4 border-b border-slate-700/50",
         collapsed ? "justify-center" : "gap-3"
       )}>
         {customLogo ? (
           <img 
             src={customLogo} 
             alt="Logo" 
-            className="w-8 h-8 rounded-lg object-cover flex-shrink-0"
+            className="w-8 h-8 kiosk-sm:w-10 kiosk-sm:h-10 kiosk:w-12 kiosk:h-12 rounded-lg object-cover flex-shrink-0"
           />
         ) : (
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center flex-shrink-0">
-            <Landmark className="w-5 h-5 text-white" />
+          <div className="w-8 h-8 kiosk-sm:w-10 kiosk-sm:h-10 kiosk:w-12 kiosk:h-12 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center flex-shrink-0">
+            <Landmark className="w-5 h-5 kiosk-sm:w-6 kiosk-sm:h-6 kiosk:w-7 kiosk:h-7 text-white" />
           </div>
         )}
         {!collapsed && (
           <div className="overflow-hidden">
-            <h1 className="font-heading font-bold text-lg text-white tracking-tight">Channel BI</h1>
-            <p className="text-[10px] text-slate-400 uppercase tracking-wider">Intelligence Platform</p>
+            <h1 className="font-heading font-bold text-lg kiosk-sm:text-xl kiosk:text-2xl text-white tracking-tight">Channel BI</h1>
+            <p className="text-[10px] kiosk-sm:text-xs kiosk:text-sm text-slate-400 uppercase tracking-wider">Intelligence Platform</p>
           </div>
         )}
       </div>
