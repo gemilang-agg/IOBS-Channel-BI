@@ -13,9 +13,9 @@ import {
   ChevronLeft,
   ChevronRight
 } from 'lucide-react';
-import { useState } from 'react';
 import { cn } from '../../lib/utils';
 import { useLogo } from '../../context/LogoContext';
+import { useSidebar } from '../../context/SidebarContext';
 
 const menuItems = [
   { path: '/dashboard', label: 'Executive', icon: LayoutDashboard },
@@ -29,7 +29,7 @@ const menuItems = [
 ];
 
 export function Sidebar() {
-  const [collapsed, setCollapsed] = useState(false);
+  const { collapsed, toggleSidebar } = useSidebar();
   const { customLogo } = useLogo();
 
   return (
@@ -113,7 +113,7 @@ export function Sidebar() {
 
       {/* Collapse Toggle */}
       <button
-        onClick={() => setCollapsed(!collapsed)}
+        onClick={toggleSidebar}
         data-testid="sidebar-toggle"
         className="absolute -right-3 top-20 w-6 h-6 rounded-full bg-slate-700 border border-slate-600 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-600 transition-colors"
       >
