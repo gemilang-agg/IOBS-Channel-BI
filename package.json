@@ -1,0 +1,37 @@
+{
+  "name": "channel-bi-dashboard",
+  "version": "1.0.0",
+  "description": "Channel BI - Retail Banking Intelligence Platform",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "start:frontend": "cd frontend && yarn start",
+    "start:backend": "cd backend && python server.py",
+    "install:all": "cd frontend && yarn install",
+    "build": "cd frontend && yarn build",
+    "test": "cd frontend && yarn test",
+    "lint": "cd frontend && yarn lint"
+  },
+  "keywords": [
+    "business-intelligence",
+    "dashboard",
+    "banking",
+    "analytics",
+    "react",
+    "fastapi"
+  ],
+  "author": "Channel BI",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  }
+}
