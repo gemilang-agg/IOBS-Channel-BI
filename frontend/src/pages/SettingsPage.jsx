@@ -65,9 +65,7 @@ export default function SettingsPage() {
                 {customLogo ? (
                   <img src={customLogo} alt="Custom Logo" className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-28 h-10 rounded-lg bg-white flex items-center justify-center border border-slate-200">
-                    <Landmark className="w-6 h-6 text-blue-500" />
-                  </div>
+                  <img src="https://customer-assets.emergentagent.com/job_deposit-lens/artifacts/x4wihjrc_hitachi-black.png" alt="Hitachi Logo" className="w-full h-full object-cover rounded-lg" />
                 )}
               </div>
             </div>

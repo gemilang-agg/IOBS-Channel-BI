@@ -67,9 +67,7 @@ export default function LoginPage() {
             {customLogo ? (
               <img src={customLogo} alt="Logo" className="w-32 h-14 rounded-xl object-cover" />
             ) : (
-              <div className="w-32 h-14 rounded-xl bg-white flex items-center justify-center">
-                <Landmark className="w-7 h-7 text-blue-500" />
-              </div>
+              <img src="https://customer-assets.emergentagent.com/job_deposit-lens/artifacts/x4wihjrc_hitachi-black.png" alt="Hitachi Logo" className="w-32 h-14 rounded-xl object-cover" />
             )}
             <div>
               <h1 className="font-heading font-bold text-2xl tracking-tight">Channel BI</h1>
@@ -129,9 +127,7 @@ export default function LoginPage() {
             {customLogo ? (
               <img src={customLogo} alt="Logo" className="w-24 h-10 rounded-xl object-cover" />
             ) : (
-              <div className="w-24 h-10 rounded-xl bg-white flex items-center justify-center border border-slate-200 dark:border-slate-700">
-                <Landmark className="w-6 h-6 text-blue-500" />
-              </div>
+              <img src="https://customer-assets.emergentagent.com/job_deposit-lens/artifacts/x4wihjrc_hitachi-black.png" alt="Hitachi Logo" className="w-24 h-10 rounded-xl object-cover" />
             )}
             <div>
               <h1 className="font-heading font-bold text-xl text-slate-900 dark:text-white">Channel BI</h1>

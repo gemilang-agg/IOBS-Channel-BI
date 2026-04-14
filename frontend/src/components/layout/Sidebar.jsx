@@ -59,14 +59,16 @@ export function Sidebar() {
             )}
           />
         ) : (
-          <div className={cn(
-            "rounded-lg bg-white flex items-center justify-center flex-shrink-0",
-            collapsed 
-              ? "w-10 h-6 kiosk-sm:w-12 kiosk-sm:h-7 kiosk:w-14 kiosk:h-8" 
-              : "w-24 h-10 kiosk-sm:w-28 kiosk-sm:h-12 kiosk:w-32 kiosk:h-14"
-          )}>
-            <Landmark className="w-5 h-5 kiosk-sm:w-6 kiosk-sm:h-6 kiosk:w-7 kiosk:h-7 text-blue-500" />
-          </div>
+          <img 
+            src="https://customer-assets.emergentagent.com/job_deposit-lens/artifacts/x4wihjrc_hitachi-black.png" 
+            alt="Hitachi Logo" 
+            className={cn(
+              "rounded-lg object-cover flex-shrink-0",
+              collapsed 
+                ? "w-10 h-6 kiosk-sm:w-12 kiosk-sm:h-7 kiosk:w-14 kiosk:h-8" 
+                : "w-24 h-10 kiosk-sm:w-28 kiosk-sm:h-12 kiosk:w-32 kiosk:h-14"
+            )}
+          />
         )}
         {!collapsed && (
           <div className="overflow-hidden">
