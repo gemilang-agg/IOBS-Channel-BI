@@ -65,8 +65,8 @@ export default function SettingsPage() {
                 {customLogo ? (
                   <img src={customLogo} alt="Custom Logo" className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-28 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center">
-                    <Landmark className="w-6 h-6 text-white" />
+                  <div className="w-28 h-10 rounded-lg bg-white flex items-center justify-center border border-slate-200">
+                    <Landmark className="w-6 h-6 text-blue-500" />
                   </div>
                 )}
               </div>

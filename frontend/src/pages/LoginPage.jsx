@@ -67,8 +67,8 @@ export default function LoginPage() {
             {customLogo ? (
               <img src={customLogo} alt="Logo" className="w-32 h-14 rounded-xl object-cover" />
             ) : (
-              <div className="w-32 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center">
-                <Landmark className="w-7 h-7 text-white" />
+              <div className="w-32 h-14 rounded-xl bg-white flex items-center justify-center">
+                <Landmark className="w-7 h-7 text-blue-500" />
               </div>
             )}
             <div>
@@ -129,8 +129,8 @@ export default function LoginPage() {
             {customLogo ? (
               <img src={customLogo} alt="Logo" className="w-24 h-10 rounded-xl object-cover" />
             ) : (
-              <div className="w-24 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center">
-                <Landmark className="w-6 h-6 text-white" />
+              <div className="w-24 h-10 rounded-xl bg-white flex items-center justify-center border border-slate-200 dark:border-slate-700">
+                <Landmark className="w-6 h-6 text-blue-500" />
               </div>
             )}
             <div>
