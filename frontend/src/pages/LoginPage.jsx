@@ -65,9 +65,9 @@ export default function LoginPage() {
           {/* Logo */}
           <div className="flex items-center gap-3 mb-12">
             {customLogo ? (
-              <img src={customLogo} alt="Logo" className="w-12 h-12 rounded-xl object-cover" />
+              <img src={customLogo} alt="Logo" className="w-32 h-14 rounded-xl object-cover" />
             ) : (
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center">
+              <div className="w-32 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center">
                 <Landmark className="w-7 h-7 text-white" />
               </div>
             )}
@@ -127,9 +127,9 @@ export default function LoginPage() {
           {/* Mobile Logo */}
           <div className="flex items-center gap-3 mb-8 lg:hidden">
             {customLogo ? (
-              <img src={customLogo} alt="Logo" className="w-10 h-10 rounded-xl object-cover" />
+              <img src={customLogo} alt="Logo" className="w-24 h-10 rounded-xl object-cover" />
             ) : (
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center">
+              <div className="w-24 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center">
                 <Landmark className="w-6 h-6 text-white" />
               </div>
             )}

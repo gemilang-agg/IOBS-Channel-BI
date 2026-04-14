@@ -61,12 +61,12 @@ export default function SettingsPage() {
           <div className="flex items-start gap-6">
             {/* Logo Preview */}
             <div className="flex-shrink-0">
-              <div className="w-24 h-24 rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-700 flex items-center justify-center overflow-hidden bg-slate-50 dark:bg-slate-800">
+              <div className="w-40 h-16 rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-700 flex items-center justify-center overflow-hidden bg-slate-50 dark:bg-slate-800">
                 {customLogo ? (
                   <img src={customLogo} alt="Custom Logo" className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center">
-                    <Landmark className="w-7 h-7 text-white" />
+                  <div className="w-28 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center">
+                    <Landmark className="w-6 h-6 text-white" />
                   </div>
                 )}
               </div>
@@ -76,7 +76,7 @@ export default function SettingsPage() {
             <div className="flex-1 space-y-4">
               <div>
                 <p className="text-sm text-slate-700 dark:text-slate-300 mb-2">
-                  Upload a logo image (PNG, JPG, SVG). Recommended size: 200x200px. Max 2MB.
+                  Upload a logo image (PNG, JPG, SVG). Recommended size: 320x120px (landscape). Max 2MB.
                 </p>
                 {uploadError && (
                   <p className="text-sm text-red-500 mb-2">{uploadError}</p>

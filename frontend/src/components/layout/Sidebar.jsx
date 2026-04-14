@@ -49,10 +49,20 @@ export function Sidebar() {
           <img 
             src={customLogo} 
             alt="Logo" 
-            className="w-8 h-8 kiosk-sm:w-10 kiosk-sm:h-10 kiosk:w-12 kiosk:h-12 rounded-lg object-cover flex-shrink-0"
+            className={cn(
+              "rounded-lg object-cover flex-shrink-0",
+              collapsed 
+                ? "w-10 h-6 kiosk-sm:w-12 kiosk-sm:h-7 kiosk:w-14 kiosk:h-8" 
+                : "w-24 h-10 kiosk-sm:w-28 kiosk-sm:h-12 kiosk:w-32 kiosk:h-14"
+            )}
           />
         ) : (
-          <div className="w-8 h-8 kiosk-sm:w-10 kiosk-sm:h-10 kiosk:w-12 kiosk:h-12 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center flex-shrink-0">
+          <div className={cn(
+            "rounded-lg bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center flex-shrink-0",
+            collapsed 
+              ? "w-10 h-6 kiosk-sm:w-12 kiosk-sm:h-7 kiosk:w-14 kiosk:h-8" 
+              : "w-24 h-10 kiosk-sm:w-28 kiosk-sm:h-12 kiosk:w-32 kiosk:h-14"
+          )}>
             <Landmark className="w-5 h-5 kiosk-sm:w-6 kiosk-sm:h-6 kiosk:w-7 kiosk:h-7 text-white" />
           </div>
         )}
