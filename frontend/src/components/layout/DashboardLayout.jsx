@@ -31,16 +31,16 @@ export function DashboardLayout() {
 
   return (
     <div 
-      className={`min-h-screen bg-slate-50 dark:bg-slate-950 ${isKiosk ? 'kiosk-mode' : ''}`} 
+      className={`min-h-screen bg-slate-100 dark:bg-slate-950 ${isKiosk ? 'kiosk-mode' : ''}`} 
       data-testid="dashboard-layout"
     >
       <Sidebar />
       <div 
         className={cn(
-          "transition-all duration-300",
+          "transition-all duration-300 min-h-screen",
           collapsed 
-            ? "pl-16 kiosk-sm:pl-20 kiosk:pl-24" 
-            : "pl-64 kiosk-sm:pl-72 kiosk:pl-80 portrait:pl-[280px] portrait:min-[1200px]:pl-[320px] portrait:min-[1600px]:pl-[360px] portrait:min-[2000px]:pl-[400px]"
+            ? "pl-24 kiosk-sm:pl-28 kiosk:pl-32" 
+            : "pl-72 kiosk-sm:pl-80 kiosk:pl-88 portrait:pl-[296px] portrait:min-[1200px]:pl-[336px] portrait:min-[1600px]:pl-[376px] portrait:min-[2000px]:pl-[416px]"
         )}
       >
         <Topbar />

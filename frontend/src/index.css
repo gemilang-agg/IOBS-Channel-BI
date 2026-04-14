@@ -291,6 +291,9 @@ code {
 @media (orientation: portrait) {
   .kiosk-mode aside {
     width: 280px;
+    left: 1rem;
+    top: 1rem;
+    bottom: 1rem;
   }
   
   .kiosk-mode aside nav ul {

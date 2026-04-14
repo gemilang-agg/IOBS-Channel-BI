@@ -35,7 +35,7 @@ export function Sidebar() {
   return (
     <aside 
       className={cn(
-        "fixed left-0 top-0 h-screen bg-slate-900 text-white z-40 transition-all duration-300 flex flex-col",
+        "fixed left-4 top-4 bottom-4 bg-slate-900 text-white z-40 transition-all duration-300 flex flex-col rounded-2xl shadow-2xl",
         collapsed 
           ? "w-16 kiosk-sm:w-20 kiosk:w-24" 
           : "w-64 kiosk-sm:w-72 kiosk:w-80 2xl:w-80"
@@ -44,7 +44,7 @@ export function Sidebar() {
     >
       {/* Logo - Fixed height */}
       <div className={cn(
-        "flex items-center h-16 kiosk-sm:h-20 kiosk:h-24 px-4 kiosk-sm:px-5 kiosk:px-6 border-b border-slate-700/50 flex-shrink-0",
+        "flex items-center h-16 kiosk-sm:h-20 kiosk:h-24 px-4 kiosk-sm:px-5 kiosk:px-6 border-b border-slate-700/50 flex-shrink-0 rounded-t-2xl",
         collapsed ? "justify-center" : "gap-3 kiosk-sm:gap-4"
       )}>
         {customLogo ? (
