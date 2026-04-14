@@ -287,6 +287,109 @@ code {
   overflow-y: auto;
 }
 
+/* Portrait orientation for kiosk (taller screens) */
+@media (orientation: portrait) {
+  .kiosk-mode aside {
+    width: 280px;
+  }
+  
+  .kiosk-mode aside nav ul {
+    gap: 0.75rem;
+  }
+  
+  .kiosk-mode aside nav ul li a {
+    padding: 1rem 1.25rem;
+    font-size: 1.1rem;
+  }
+  
+  .kiosk-mode aside nav ul li a svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
+
+@media (orientation: portrait) and (min-height: 1200px) {
+  .kiosk-mode aside {
+    width: 320px;
+  }
+  
+  .kiosk-mode aside nav ul {
+    gap: 1rem;
+  }
+  
+  .kiosk-mode aside nav ul li a {
+    padding: 1.25rem 1.5rem;
+    font-size: 1.25rem;
+  }
+  
+  .kiosk-mode aside nav ul li a svg {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+  
+  .kiosk-mode aside .h-16 {
+    height: 5rem;
+  }
+}
+
+@media (orientation: portrait) and (min-height: 1600px) {
+  .kiosk-mode aside {
+    width: 360px;
+  }
+  
+  .kiosk-mode aside nav ul {
+    gap: 1.25rem;
+  }
+  
+  .kiosk-mode aside nav ul li a {
+    padding: 1.5rem 1.75rem;
+    font-size: 1.4rem;
+    border-radius: 1rem;
+  }
+  
+  .kiosk-mode aside nav ul li a svg {
+    width: 2rem;
+    height: 2rem;
+  }
+  
+  .kiosk-mode aside .h-16 {
+    height: 6rem;
+  }
+  
+  .kiosk-mode aside h1 {
+    font-size: 1.75rem;
+  }
+}
+
+@media (orientation: portrait) and (min-height: 2000px) {
+  .kiosk-mode aside {
+    width: 400px;
+  }
+  
+  .kiosk-mode aside nav ul {
+    gap: 1.5rem;
+  }
+  
+  .kiosk-mode aside nav ul li a {
+    padding: 1.75rem 2rem;
+    font-size: 1.6rem;
+    border-radius: 1.25rem;
+  }
+  
+  .kiosk-mode aside nav ul li a svg {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+  
+  .kiosk-mode aside .h-16 {
+    height: 7rem;
+  }
+  
+  .kiosk-mode aside h1 {
+    font-size: 2rem;
+  }
+}
+
 /* Card hover effects */
 .card-hover {
   transition: transform 0.2s ease, box-shadow 0.2s ease;

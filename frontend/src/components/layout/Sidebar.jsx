@@ -36,14 +36,16 @@ export function Sidebar() {
     <aside 
       className={cn(
         "fixed left-0 top-0 h-screen bg-slate-900 text-white z-40 transition-all duration-300 flex flex-col",
-        collapsed ? "w-16 kiosk-sm:w-20 kiosk:w-24" : "w-64 kiosk-sm:w-72 kiosk:w-80"
+        collapsed 
+          ? "w-16 kiosk-sm:w-20 kiosk:w-24" 
+          : "w-64 kiosk-sm:w-72 kiosk:w-80 2xl:w-80"
       )}
       data-testid="sidebar"
     >
       {/* Logo - Fixed height */}
       <div className={cn(
-        "flex items-center h-16 kiosk-sm:h-20 kiosk:h-24 px-4 border-b border-slate-700/50 flex-shrink-0",
-        collapsed ? "justify-center" : "gap-3"
+        "flex items-center h-16 kiosk-sm:h-20 kiosk:h-24 px-4 kiosk-sm:px-5 kiosk:px-6 border-b border-slate-700/50 flex-shrink-0",
+        collapsed ? "justify-center" : "gap-3 kiosk-sm:gap-4"
       )}>
         {customLogo ? (
           <img 
@@ -75,15 +77,15 @@ export function Sidebar() {
       </div>
 
       {/* Navigation - Fills remaining space */}
-      <nav className="flex-1 py-4 overflow-y-auto min-h-0">
-        <ul className="space-y-1 px-2 h-full flex flex-col">
+      <nav className="flex-1 py-4 kiosk-sm:py-5 kiosk:py-6 overflow-y-auto min-h-0">
+        <ul className="space-y-1 kiosk-sm:space-y-2 kiosk:space-y-3 px-2 kiosk-sm:px-3 kiosk:px-4 h-full flex flex-col">
           {menuItems.map((item) => (
             <li key={item.path}>
               <NavLink
                 to={item.path}
                 data-testid={`nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
                 className={({ isActive }) => cn(
-                  "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group",
+                  "flex items-center gap-3 kiosk-sm:gap-4 px-3 kiosk-sm:px-4 kiosk:px-5 py-2.5 kiosk-sm:py-3.5 kiosk:py-4 rounded-lg kiosk-sm:rounded-xl transition-all duration-200 group",
                   collapsed && "justify-center px-2",
                   isActive 
                     ? "bg-blue-500/20 text-blue-400" 
@@ -91,11 +93,11 @@ export function Sidebar() {
                 )}
               >
                 <item.icon className={cn(
-                  "w-5 h-5 flex-shrink-0 transition-colors",
+                  "w-5 h-5 kiosk-sm:w-6 kiosk-sm:h-6 kiosk:w-7 kiosk:h-7 flex-shrink-0 transition-colors",
                   "group-hover:text-blue-400"
                 )} />
                 {!collapsed && (
-                  <span className="font-medium text-sm">{item.label}</span>
+                  <span className="font-medium text-sm kiosk-sm:text-base kiosk:text-lg">{item.label}</span>
                 )}
               </NavLink>
             </li>
@@ -103,20 +105,20 @@ export function Sidebar() {
           {/* Spacer to push admin to bottom */}
           <li className="flex-1" aria-hidden="true"></li>
           {/* Admin link at bottom of nav */}
-          <li className="mt-auto border-t border-slate-700/50 pt-2">
+          <li className="mt-auto border-t border-slate-700/50 pt-2 kiosk-sm:pt-3 kiosk:pt-4">
             <NavLink
               to="/settings"
               data-testid="nav-settings"
               className={({ isActive }) => cn(
-                "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200",
+                "flex items-center gap-3 kiosk-sm:gap-4 px-3 kiosk-sm:px-4 kiosk:px-5 py-2.5 kiosk-sm:py-3.5 kiosk:py-4 rounded-lg kiosk-sm:rounded-xl transition-all duration-200",
                 collapsed && "justify-center px-2",
                 isActive 
                   ? "bg-blue-500/20 text-blue-400" 
                   : "text-slate-400 hover:text-white hover:bg-slate-800/60"
               )}
             >
-              <Settings className="w-5 h-5 flex-shrink-0" />
-              {!collapsed && <span className="font-medium text-sm">Administration</span>}
+              <Settings className="w-5 h-5 kiosk-sm:w-6 kiosk-sm:h-6 kiosk:w-7 kiosk:h-7 flex-shrink-0" />
+              {!collapsed && <span className="font-medium text-sm kiosk-sm:text-base kiosk:text-lg">Administration</span>}
             </NavLink>
           </li>
         </ul>
@@ -126,9 +128,9 @@ export function Sidebar() {
       <button
         onClick={toggleSidebar}
         data-testid="sidebar-toggle"
-        className="absolute -right-3 top-20 w-6 h-6 rounded-full bg-slate-700 border border-slate-600 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-600 transition-colors"
+        className="absolute -right-3 top-20 kiosk-sm:top-24 kiosk:top-28 w-6 h-6 kiosk-sm:w-7 kiosk-sm:h-7 kiosk:w-8 kiosk:h-8 rounded-full bg-slate-700 border border-slate-600 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-600 transition-colors"
       >
-        {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+        {collapsed ? <ChevronRight className="w-4 h-4 kiosk-sm:w-5 kiosk-sm:h-5" /> : <ChevronLeft className="w-4 h-4 kiosk-sm:w-5 kiosk-sm:h-5" />}
       </button>
     </aside>
   );

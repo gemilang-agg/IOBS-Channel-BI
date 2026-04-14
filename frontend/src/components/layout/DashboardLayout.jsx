@@ -40,7 +40,7 @@ export function DashboardLayout() {
           "transition-all duration-300",
           collapsed 
             ? "pl-16 kiosk-sm:pl-20 kiosk:pl-24" 
-            : "pl-64 kiosk-sm:pl-72 kiosk:pl-80"
+            : "pl-64 kiosk-sm:pl-72 kiosk:pl-80 portrait:pl-[280px] portrait:min-[1200px]:pl-[320px] portrait:min-[1600px]:pl-[360px] portrait:min-[2000px]:pl-[400px]"
         )}
       >
         <Topbar />
