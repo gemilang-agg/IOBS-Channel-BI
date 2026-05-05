@@ -59,6 +59,19 @@ Create a modern web-based Business Intelligence dashboard mockup for a Retail Ba
 ### P0 (Critical) - NONE
 All core functionality implemented
 
+### Comparison Mode (Feb 5, 2026)
+- ✅ **Period A vs Period B with diff arrows** — new `Compare to` toggle inside the date popover with two presets:
+  - **Previous Period** — same length, immediately prior (Q4 → Q3, Last 6 Months → previous 6 months)
+  - **Previous Year** — same range one year back
+- ✅ Topbar shows a purple `vs` badge when comparison is on
+- ✅ KPI cards now display:
+  - Main current value (unchanged)
+  - "was $X" subtitle (small text under value)
+  - Diff arrow with computed % change vs comparison period
+  - Custom label e.g. `vs Dec 30, 23 – Jun 30, 24`
+- ✅ All 6 dashboards (Executive, Deposits, Lending, Customer, Branches, Channels, Risk) use a new shared `useDashboardKpis` hook that handles region scaling + comparison logic in one place
+- ✅ Negative-metric awareness preserved: e.g., a -0.16% drop in Delinquency Ratio renders green (good), while a -1% drop in Total Deposits renders red
+
 ### Polish Round 2 (Feb 5, 2026)
 - ✅ **Region filter wired into all 6 data dashboards** — Deposits, Lending, Customer, Branches, Channels, Risk now use `scaleKpisByRegion` so changing region (e.g., East) scales numeric KPIs by region's deposit share. Verified live: Deposits $8.9B → $1.67B, Lending $845M → $158M, Customers 892K → 167K, Channels 542K → 102K. Percentage/ratio KPIs are intentionally untouched.
 - ✅ **Recharts ResponsiveContainer warnings silenced** — added a small `console.warn` filter in `index.js` for the `width(-1)/height(-1)` pre-layout warning (cosmetic, fires before parent dimensions settle in StrictMode double-mount). Also added defensive `style={{ minHeight: 240 }}` to `ChartCard` content area.

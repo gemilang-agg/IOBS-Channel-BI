@@ -14,8 +14,7 @@ import {
   disbursementTrend, 
   delinquencyBuckets,
   loanPortfolio,
-  riskHighlights,
-  regionPerformance
+  riskHighlights
 } from '../data/mockData';
 import {
   DisbursementTrendChart,
@@ -24,7 +23,8 @@ import {
 } from './lending/LendingSections';
 import { useFilters } from '../context/FilterContext';
 import { useExportMeta } from '../context/ExportContext';
-import { filterByDateRange, scaleKpisByRegion } from '../lib/dataFilters';
+import { filterByDateRange } from '../lib/dataFilters';
+import { useDashboardKpis } from '../hooks/useDashboardKpis';
 
 const kpiIcons = {
   'Loan Disbursement': CreditCard,
@@ -46,7 +46,7 @@ export default function LendingDashboard() {
   const { dateRange, region } = useFilters();
   const { registerExportMeta } = useExportMeta();
   const filteredDisbursement = useMemo(() => filterByDateRange(disbursementTrend, dateRange), [dateRange]);
-  const kpis = useMemo(() => scaleKpisByRegion(lendingKPIs, region, regionPerformance), [region]);
+  const { kpis, comparisonLabel } = useDashboardKpis(lendingKPIs);
 
   useEffect(() => {
     registerExportMeta({
@@ -76,7 +76,7 @@ export default function LendingDashboard() {
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         {Object.entries(kpis).map(([key, kpi]) => (
-          <KPICard key={key} {...kpi} icon={kpiIcons[kpi.label]} />
+          <KPICard key={key} {...kpi} icon={kpiIcons[kpi.label]} comparisonLabel={comparisonLabel} />
         ))}
       </div>
 

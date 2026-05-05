@@ -13,8 +13,7 @@ import {
   customerSegmentation, 
   productHolding,
   churnTrend,
-  customerInsights,
-  regionPerformance
+  customerInsights
 } from '../data/mockData';
 import {
   CustomerSegmentationChart,
@@ -24,7 +23,8 @@ import {
 } from './customer/CustomerSections';
 import { useFilters } from '../context/FilterContext';
 import { useExportMeta } from '../context/ExportContext';
-import { filterByDateRange, scaleKpisByRegion } from '../lib/dataFilters';
+import { filterByDateRange } from '../lib/dataFilters';
+import { useDashboardKpis } from '../hooks/useDashboardKpis';
 
 const kpiIcons = {
   'Total Customers': Users,
@@ -39,7 +39,7 @@ export default function CustomerDashboard() {
   const { dateRange, region } = useFilters();
   const { registerExportMeta } = useExportMeta();
   const filteredChurn = useMemo(() => filterByDateRange(churnTrend, dateRange), [dateRange]);
-  const kpis = useMemo(() => scaleKpisByRegion(customerKPIs, region, regionPerformance), [region]);
+  const { kpis, comparisonLabel } = useDashboardKpis(customerKPIs);
 
   useEffect(() => {
     registerExportMeta({
@@ -69,7 +69,7 @@ export default function CustomerDashboard() {
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         {Object.entries(kpis).map(([key, kpi]) => (
-          <KPICard key={key} {...kpi} icon={kpiIcons[kpi.label]} />
+          <KPICard key={key} {...kpi} icon={kpiIcons[kpi.label]} comparisonLabel={comparisonLabel} />
         ))}
       </div>
 

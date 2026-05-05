@@ -34,8 +34,8 @@ import { Badge } from '../components/ui/badge';
 import { cn } from '../lib/utils';
 import { useFilters } from '../context/FilterContext';
 import { useExportMeta } from '../context/ExportContext';
-import { filterByDateRange, scaleKpisByRegion } from '../lib/dataFilters';
-import { regionPerformance } from '../data/mockData';
+import { filterByDateRange } from '../lib/dataFilters';
+import { useDashboardKpis } from '../hooks/useDashboardKpis';
 
 const getNpsBadgeClass = (nps) => {
   if (nps >= 75) return "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400";
@@ -56,7 +56,7 @@ export default function BranchDashboard() {
   const { dateRange, region } = useFilters();
   const { registerExportMeta } = useExportMeta();
   const filteredTarget = useMemo(() => filterByDateRange(branchTargetVsActual, dateRange), [dateRange]);
-  const kpis = useMemo(() => scaleKpisByRegion(branchKPIs, region, regionPerformance), [region]);
+  const { kpis, comparisonLabel } = useDashboardKpis(branchKPIs);
   const kpiIcons = {
     'Target Achievement': Target,
     'New Accounts': UserPlus,
@@ -123,6 +123,7 @@ export default function BranchDashboard() {
             key={key}
             {...kpi}
             icon={kpiIcons[kpi.label]}
+            comparisonLabel={comparisonLabel}
           />
         ))}
       </div>

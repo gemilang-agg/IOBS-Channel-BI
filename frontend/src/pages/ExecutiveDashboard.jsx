@@ -27,7 +27,8 @@ import {
 } from './executive/ExecutiveCharts';
 import { useFilters } from '../context/FilterContext';
 import { useExportMeta } from '../context/ExportContext';
-import { applyFilters, filterByDateRange, scaleKpisByRegion } from '../lib/dataFilters';
+import { applyFilters, filterByDateRange } from '../lib/dataFilters';
+import { useDashboardKpis } from '../hooks/useDashboardKpis';
 
 const kpiIcons = {
   'Total Deposits': Wallet,
@@ -56,7 +57,7 @@ export default function ExecutiveDashboard() {
   const filteredDeposits = useMemo(() => filterByDateRange(depositTrendData, dateRange), [dateRange]);
   const filteredLoans = useMemo(() => filterByDateRange(loanTrendData, dateRange), [dateRange]);
   const filteredRegion = useMemo(() => applyFilters(regionPerformance, { region }), [region]);
-  const kpis = useMemo(() => scaleKpisByRegion(executiveKPIs, region, regionPerformance), [region]);
+  const { kpis, comparisonLabel } = useDashboardKpis(executiveKPIs);
 
   useEffect(() => {
     registerExportMeta({
@@ -91,7 +92,7 @@ export default function ExecutiveDashboard() {
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 kiosk-sm:gap-5 kiosk:gap-6">
         {Object.entries(kpis).map(([key, kpi]) => (
-          <KPICard key={key} {...kpi} icon={kpiIcons[kpi.label]} />
+          <KPICard key={key} {...kpi} icon={kpiIcons[kpi.label]} comparisonLabel={comparisonLabel} />
         ))}
       </div>
 

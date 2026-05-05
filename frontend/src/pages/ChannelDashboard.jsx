@@ -15,8 +15,7 @@ import {
   digitalAdoptionTrend, 
   transactionByChannel,
   failedTxnTrend,
-  channelAlerts,
-  regionPerformance
+  channelAlerts
 } from '../data/mockData';
 import {
   DigitalAdoptionChart,
@@ -25,7 +24,8 @@ import {
 } from './channel/ChannelCharts';
 import { useFilters } from '../context/FilterContext';
 import { useExportMeta } from '../context/ExportContext';
-import { filterByDateRange, scaleKpisByRegion } from '../lib/dataFilters';
+import { filterByDateRange } from '../lib/dataFilters';
+import { useDashboardKpis } from '../hooks/useDashboardKpis';
 
 const kpiIcons = {
   'Active Mobile Users': Smartphone,
@@ -48,7 +48,7 @@ export default function ChannelDashboard() {
   const { registerExportMeta } = useExportMeta();
   const filteredAdoption = useMemo(() => filterByDateRange(digitalAdoptionTrend, dateRange), [dateRange]);
   const filteredFailed = useMemo(() => filterByDateRange(failedTxnTrend, dateRange), [dateRange]);
-  const kpis = useMemo(() => scaleKpisByRegion(channelKPIs, region, regionPerformance), [region]);
+  const { kpis, comparisonLabel } = useDashboardKpis(channelKPIs);
 
   useEffect(() => {
     registerExportMeta({
@@ -78,7 +78,7 @@ export default function ChannelDashboard() {
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         {Object.entries(kpis).map(([key, kpi]) => (
-          <KPICard key={key} {...kpi} icon={kpiIcons[kpi.label]} />
+          <KPICard key={key} {...kpi} icon={kpiIcons[kpi.label]} comparisonLabel={comparisonLabel} />
         ))}
       </div>
 

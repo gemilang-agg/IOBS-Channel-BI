@@ -14,8 +14,7 @@ import {
   riskKPIs, 
   delinquencyTrend, 
   recoveryByTeam,
-  productRiskComparison,
-  regionPerformance
+  productRiskComparison
 } from '../data/mockData';
 import {
   LineChart,
@@ -33,7 +32,8 @@ import { Badge } from '../components/ui/badge';
 import { cn } from '../lib/utils';
 import { useFilters } from '../context/FilterContext';
 import { useExportMeta } from '../context/ExportContext';
-import { filterByDateRange, scaleKpisByRegion } from '../lib/dataFilters';
+import { filterByDateRange } from '../lib/dataFilters';
+import { useDashboardKpis } from '../hooks/useDashboardKpis';
 
 const getRateBadgeClass = (rate) => {
   if (rate >= 80) return "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400";
@@ -57,7 +57,7 @@ export default function RiskDashboard() {
   const { dateRange, region } = useFilters();
   const { registerExportMeta } = useExportMeta();
   const filteredDelinquency = useMemo(() => filterByDateRange(delinquencyTrend, dateRange), [dateRange]);
-  const kpis = useMemo(() => scaleKpisByRegion(riskKPIs, region, regionPerformance), [region]);
+  const { kpis, comparisonLabel } = useDashboardKpis(riskKPIs);
 
   useEffect(() => {
     registerExportMeta({
@@ -129,6 +129,7 @@ export default function RiskDashboard() {
             key={key}
             {...kpi}
             icon={kpiIcons[kpi.label]}
+            comparisonLabel={comparisonLabel}
           />
         ))}
       </div>

@@ -138,3 +138,99 @@ export function formatDateRangeLabel(dateRange) {
   if (!dateRange.to) return fmt(dateRange.from);
   return `${fmt(dateRange.from)} – ${fmt(dateRange.to)}`;
 }
+
+const MS_PER_DAY = 1000 * 60 * 60 * 24;
+
+/**
+ * Compute the "previous period" range given a current range. Same length, ending the
+ * day before `from`. e.g., Q4 2024 → Q3 2024.
+ */
+export function computePreviousPeriod(range) {
+  if (!range?.from || !range?.to) return null;
+  const len = Math.round((range.to - range.from) / MS_PER_DAY);
+  const newTo = new Date(range.from.getTime() - MS_PER_DAY);
+  const newFrom = new Date(newTo.getTime() - len * MS_PER_DAY);
+  return { from: newFrom, to: newTo };
+}
+
+/**
+ * Compute the "same range, prior year" e.g., Jul–Dec 2024 → Jul–Dec 2023.
+ */
+export function computePreviousYear(range) {
+  if (!range?.from || !range?.to) return null;
+  const newFrom = new Date(range.from);
+  newFrom.setFullYear(newFrom.getFullYear() - 1);
+  const newTo = new Date(range.to);
+  newTo.setFullYear(newTo.getFullYear() - 1);
+  return { from: newFrom, to: newTo };
+}
+
+const COMPARE_PRESETS = {
+  'previous-period': {
+    label: 'Previous Period',
+    compute: computePreviousPeriod,
+    shortLabel: (range) => {
+      if (!range) return 'previous period';
+      const fmt = (d) => d?.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      return `${fmt(range.from)} – ${fmt(range.to)}`;
+    }
+  },
+  'previous-year': {
+    label: 'Previous Year',
+    compute: computePreviousYear,
+    shortLabel: (range) => {
+      if (!range) return 'previous year';
+      return `same range ${range.from?.getFullYear()}`;
+    }
+  }
+};
+
+export function getComparePresets() {
+  return Object.entries(COMPARE_PRESETS).map(([id, p]) => ({ id, ...p }));
+}
+
+export function getComparePreset(id) {
+  return COMPARE_PRESETS[id] || null;
+}
+
+/**
+ * Mock-friendly comparison: derive a "comparison value" for each KPI based on a stable
+ * hash of the comparison range, so the diff arrows tell a consistent story per range.
+ *
+ * Returns kpis with overridden `change`, `trend`, and adds `comparisonValue`.
+ */
+export function computeComparisonKpis(kpis, compareRange) {
+  if (!kpis || !compareRange?.from || !compareRange?.to) return kpis;
+  const seed =
+    Math.abs(compareRange.from.getTime() + compareRange.to.getTime()) % 1000 / 1000;
+
+  const result = {};
+  let i = 0;
+  Object.entries(kpis).forEach(([key, kpi]) => {
+    // Mix a per-KPI offset so different KPIs land on different sides of zero
+    const offset = ((i++ * 137 + key.length * 41) % 1000) / 1000;
+    const factor = 0.85 + ((seed + offset) % 1) * 0.3; // 0.85 .. 1.15
+
+    if (kpi.unit === '%' || kpi.unit === 'X' || typeof kpi.value !== 'number') {
+      // Percent-style KPIs: nudge by small absolute delta (-0.5pp .. +0.5pp)
+      const pp = +(((seed + offset) % 1) - 0.5).toFixed(2);
+      result[key] = {
+        ...kpi,
+        change: pp,
+        trend: pp >= 0 ? 'up' : 'down',
+        comparisonValue: kpi.value
+      };
+      return;
+    }
+
+    const compValue = +(kpi.value * factor).toFixed(2);
+    const change = +(((kpi.value - compValue) / compValue) * 100).toFixed(1);
+    result[key] = {
+      ...kpi,
+      change,
+      trend: change >= 0 ? 'up' : 'down',
+      comparisonValue: compValue
+    };
+  });
+  return result;
+}
