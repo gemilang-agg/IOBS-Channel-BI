@@ -59,6 +59,19 @@ Create a modern web-based Business Intelligence dashboard mockup for a Retail Ba
 ### P0 (Critical) - NONE
 All core functionality implemented
 
+### Interactive Features (Feb 5, 2026)
+- ✅ **Drill-down detail pages** — clicking rows in Regional Performance, Branch Leaderboard, or pie slices in Revenue-by-Product navigates to dedicated `/details/region/:region`, `/details/product/:product`, `/details/branch/:branch` pages with their own KPIs, charts, and tables
+- ✅ **Date-range filter** — popover with two-month calendar (react-day-picker v9, range mode) in Topbar; filters all monthly trend charts across dashboards (Executive, Deposits, Lending, Customer, Channel, Risk, Branches)
+- ✅ **Region selector** — Topbar Select with All/North/South/East/West/Central; on Executive dashboard, scales KPIs by region share and filters Regional Performance Summary
+- ✅ **Real PDF export** with dropdown:
+  - Quick Export (html2canvas screenshot of dashboard, ~360KB)
+  - Full Report (jsPDF + autotable + chart capture: title, KPIs grid, tables, chart images, ~180KB)
+- ✅ Each dashboard registers its own `ExportContext` meta so the PDF reflects the current page
+
+### Critical Bugfixes (Feb 5, 2026)
+- ✅ Removed overzealous CSS in `index.css` (`body > div[style*='position: fixed']:last-of-type`, `div[style*='position: fixed'][style*='bottom']`) that was clobbering Radix portal overlays — Select dropdowns, Popovers, and DropdownMenus had 0×0 bounding boxes
+- ✅ Fixed infinite re-render loop in `ExecutiveDashboard.jsx` by wrapping derived `kpis`/`filteredRegion` in `useMemo`
+
 ### Code Quality Fixes (Feb 5, 2026)
 - ✅ Fixed array-index-as-key in LoginPage, LendingDashboard (delinquency buckets, risk highlights), ExecutiveDashboard (CustomTooltip, Pie cells), CustomerDashboard (segmentation cells, insights)
 - ✅ Refactored nested ternaries in RiskDashboard (recovery rate, NPL status) and BranchDashboard (NPS, achievement color) into named helper functions

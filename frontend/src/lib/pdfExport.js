@@ -11,7 +11,7 @@ const normalizeFileName = (title) =>
 
 async function captureElement(element) {
   return html2canvas(element, {
-    scale: 2,
+    scale: 1.5,
     backgroundColor: '#ffffff',
     useCORS: true,
     logging: false
@@ -26,8 +26,8 @@ export async function exportQuickPdf({ title = 'Dashboard Report', elementId = '
   if (!el) throw new Error(`Element #${elementId} not found`);
 
   const canvas = await captureElement(el);
-  const imgData = canvas.toDataURL('image/png');
-  const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+  const imgData = canvas.toDataURL('image/jpeg', 0.85);
+  const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait', compress: true });
 
   const imgWidth = CONTENT_WIDTH;
   const imgHeight = (canvas.height * imgWidth) / canvas.width;
@@ -36,13 +36,13 @@ export async function exportQuickPdf({ title = 'Dashboard Report', elementId = '
   let heightLeft = imgHeight;
   let position = MARGIN;
 
-  pdf.addImage(imgData, 'PNG', MARGIN, position, imgWidth, imgHeight);
+  pdf.addImage(imgData, 'JPEG', MARGIN, position, imgWidth, imgHeight);
   heightLeft -= pageHeight - MARGIN;
 
   while (heightLeft > 0) {
     position = heightLeft - imgHeight + MARGIN;
     pdf.addPage();
-    pdf.addImage(imgData, 'PNG', MARGIN, position, imgWidth, imgHeight);
+    pdf.addImage(imgData, 'JPEG', MARGIN, position, imgWidth, imgHeight);
     heightLeft -= pageHeight;
   }
 
@@ -67,7 +67,7 @@ export async function exportStructuredPdf({
   tables = [],
   chartsSelector = '[data-chart-card="true"]'
 } = {}) {
-  const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+  const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait', compress: true });
   const pageHeight = pdf.internal.pageSize.getHeight();
   let cursorY = MARGIN;
 
@@ -170,7 +170,7 @@ export async function exportStructuredPdf({
   for (const el of chartEls) {
     try {
       const canvas = await captureElement(el);
-      const imgData = canvas.toDataURL('image/png');
+      const imgData = canvas.toDataURL('image/jpeg', 0.85);
       const imgWidth = CONTENT_WIDTH;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
@@ -178,7 +178,7 @@ export async function exportStructuredPdf({
         pdf.addPage();
         cursorY = MARGIN;
       }
-      pdf.addImage(imgData, 'PNG', MARGIN, cursorY, imgWidth, imgHeight);
+      pdf.addImage(imgData, 'JPEG', MARGIN, cursorY, imgWidth, imgHeight);
       cursorY += imgHeight + 6;
     } catch (err) {
       console.warn('Chart capture failed for element:', el, err);
