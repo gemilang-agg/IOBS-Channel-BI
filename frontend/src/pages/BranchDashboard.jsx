@@ -6,6 +6,8 @@ import {
   Users, 
   MessageSquare 
 } from 'lucide-react';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { KPICard } from '../components/dashboard/KPICard';
 import { ChartCard } from '../components/dashboard/ChartCard';
 import { DataTable } from '../components/dashboard/DataTable';
@@ -30,6 +32,9 @@ import {
 } from 'recharts';
 import { Badge } from '../components/ui/badge';
 import { cn } from '../lib/utils';
+import { useFilters } from '../context/FilterContext';
+import { useExportMeta } from '../context/ExportContext';
+import { filterByDateRange } from '../lib/dataFilters';
 
 const getNpsBadgeClass = (nps) => {
   if (nps >= 75) return "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400";
@@ -43,7 +48,13 @@ const getAchievementColor = (achievement) => {
   return '#EF4444';
 };
 
+const slug = (s) => s.toLowerCase().replace(/\s+/g, '-');
+
 export default function BranchDashboard() {
+  const navigate = useNavigate();
+  const { dateRange } = useFilters();
+  const { registerExportMeta } = useExportMeta();
+  const filteredTarget = filterByDateRange(branchTargetVsActual, dateRange);
   const kpiIcons = {
     'Target Achievement': Target,
     'New Accounts': UserPlus,
@@ -73,6 +84,22 @@ export default function BranchDashboard() {
       <span className="font-mono">${(value / 1000).toFixed(0)}K</span>
     )}
   ];
+
+  useEffect(() => {
+    registerExportMeta({
+      title: 'Branch Performance Dashboard',
+      kpis: Object.values(branchKPIs),
+      tables: [
+        {
+          title: 'Branch Leaderboard',
+          head: [['Rank', 'Branch', 'Achievement', 'Deposits (M)', 'Loans', 'NPS']],
+          body: branchLeaderboard.map((b) => [b.rank, b.branch, `${b.achievement}%`, `$${b.deposits}M`, b.loans, b.nps])
+        }
+      ]
+    });
+  }, [registerExportMeta]);
+
+  const handleBranchClick = (row) => navigate(`/details/branch/${slug(row.branch)}`);
 
   return (
     <div className="space-y-6" data-testid="branch-dashboard">
@@ -106,7 +133,7 @@ export default function BranchDashboard() {
         >
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={branchTargetVsActual}>
+              <LineChart data={filteredTarget}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" vertical={false} />
                 <XAxis 
                   dataKey="month" 
@@ -214,6 +241,7 @@ export default function BranchDashboard() {
           columns={leaderboardColumns}
           data={branchLeaderboard}
           showRank
+          onRowClick={handleBranchClick}
         />
 
         {/* Staff Productivity */}

@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { 
   AlertTriangle, 
   Clock, 
@@ -29,6 +30,9 @@ import {
 } from 'recharts';
 import { Badge } from '../components/ui/badge';
 import { cn } from '../lib/utils';
+import { useFilters } from '../context/FilterContext';
+import { useExportMeta } from '../context/ExportContext';
+import { filterByDateRange } from '../lib/dataFilters';
 
 const getRateBadgeClass = (rate) => {
   if (rate >= 80) return "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400";
@@ -49,6 +53,23 @@ const getNplStatusLabel = (npl) => {
 };
 
 export default function RiskDashboard() {
+  const { dateRange } = useFilters();
+  const { registerExportMeta } = useExportMeta();
+  const filteredDelinquency = filterByDateRange(delinquencyTrend, dateRange);
+
+  useEffect(() => {
+    registerExportMeta({
+      title: 'Risk & Collections Dashboard',
+      kpis: Object.values(riskKPIs),
+      tables: [
+        {
+          title: 'Product Risk Comparison',
+          head: [['Product', 'NPL %', 'PAR 30 %', 'Provision %']],
+          body: productRiskComparison.map((p) => [p.product, `${p.npl}%`, `${p.par30}%`, `${p.provision}%`])
+        }
+      ]
+    });
+  }, [registerExportMeta]);
   const kpiIcons = {
     'PAR 30': AlertTriangle,
     'PAR 90': Clock,
@@ -118,7 +139,7 @@ export default function RiskDashboard() {
         >
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={delinquencyTrend}>
+              <LineChart data={filteredDelinquency}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" vertical={false} />
                 <XAxis 
                   dataKey="month" 

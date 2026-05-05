@@ -1,0 +1,61 @@
+{
+  "summary": "Frontend testing of Channel BI new interactive features (drill-downs, filters, PDF export). Drill-down features (URLs, row clicks, back button) work correctly. However, ALL Radix UI overlay-based components (Region Select, Date Popover, Export PDF DropdownMenu) have a critical rendering bug: portal content renders in DOM but with bbox 0x0 (not visually displayed) and <html> element intercepts pointer events. This blocks the Region filter, Date filter, and PDF export Quick/Full menu items entirely.",
+  "backend_issues": {},
+  "frontend_issues": {
+    "critical_bugs": [
+      {
+        "component": "Radix UI Portal Overlays (DropdownMenu/Select/Popover)",
+        "issue": "When opened (data-state='open'), portal content renders in DOM but has bounding-box 0x0 — items not visible. Playwright reports 'html intercepts pointer events' on the dropdown trigger after first open. Affects export-pdf-quick/full, region-option-* and date-filter-popover. Confirmed via JS: bbox={x:0,y:0,width:0,height:0} for [data-testid='export-pdf-quick'] while data-state='open' on trigger.",
+        "selectors": ["export-pdf-btn", "export-pdf-quick", "export-pdf-full", "region-filter", "region-option-east", "date-filter", "date-filter-popover"],
+        "priority": "CRITICAL",
+        "impact": "Region filter cannot be changed. Date filter popover cannot be opened/used. PDF Quick/Full export cannot be triggered via menu — feature is fully blocked from UI.",
+        "likely_root_cause": "The shadcn/ui dropdown-menu/select/popover Content components likely missing proper z-index, position, or the Radix portal mount-point/overlay CSS (e.g. data-[state=open]:animate-in classes) was overridden or Tailwind animation classes not generated. Could also be a global CSS rule (body/html) with pointer-events disabled or transform/overflow hidden on a parent. Inspect /app/frontend/src/components/ui/dropdown-menu.jsx, select.jsx, popover.jsx CSS classes and tailwind.config.js content paths."
+      }
+    ],
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"component": "Recharts Containers", "issue": "Persistent console warnings: width(-1) and height(-1) — many ResponsiveContainer parents render with no size at first paint", "priority": "LOW"}
+    ]
+  },
+  "passed_tests": [
+    "Login flow with test@channelbi.com / password redirects to /dashboard",
+    "Topbar shows region-filter, date-filter, export-pdf-btn (all data-testid present)",
+    "Direct URL /details/region/east loads page with 'East Region' title and detail-back-btn",
+    "Direct URL /details/product/savings loads page with 'Savings' title",
+    "Direct URL /details/branch/downtown-main loads page with 'Downtown Main' title",
+    "Clicking row in Regional Performance Summary navigates to /details/region/<name> (e.g., /details/region/north)",
+    "Clicking row in Branch Leaderboard on /branches navigates to /details/branch/downtown-main",
+    "detail-back-btn returns to /dashboard from region detail and to /branches from branch detail",
+    "All 9 dashboards render without crash: /dashboard, /deposits, /lending, /customers, /branches, /channels, /risk, /reports, /settings",
+    "Hitachi branding present in topbar/sidebar",
+    "Export PDF dropdown trigger toggles data-state='open' (button click works)"
+  ],
+  "failed_tests": [
+    "Region filter select item click — region-option-east not visible (bbox 0x0 in portal)",
+    "Date filter popover — content not rendered visibly (is_visible=False)",
+    "PDF Quick Export click — export-pdf-quick has 0x0 bbox, click intercepted by html",
+    "PDF Full Export click — same bbox 0x0 issue",
+    "Pie slice click on Revenue-by-Product (recharts-pie-sector) does NOT navigate to /details/product/* — URL stayed /dashboard. onProductClick handler may not be firing on path elements."
+  ],
+  "test_report_links": [],
+  "action_items": [
+    "CRITICAL: Investigate why Radix Portal content (DropdownMenuContent, SelectContent, PopoverContent) renders with 0x0 bbox even though data-state='open'. Likely candidates: (1) shadcn ui component class strings missing, (2) tailwind.config.js content globs missing components/ui/*, (3) global CSS rule on body/html disabling pointer-events or hiding [data-radix-popper-content-wrapper]. Open browser devtools manually and inspect a child of body matching [data-radix-popper-content-wrapper] when dropdown is open.",
+    "CRITICAL: Pie slice click for product drill-down does not navigate. Verify onProductClick is wired to <Pie onClick> (not <Cell>) in RevenueByProductChart, and that ExecutiveDashboard's handleProductClick uses navigate() correctly with proper slug.",
+    "Verify Recharts ResponsiveContainer parents have explicit height to remove width(-1)/height(-1) warnings.",
+    "Once Radix overlay rendering is fixed, re-run the interactive flow tests for region change → table updates, date range → chart filter, and both PDF download paths (size > 50KB / 100KB respectively)."
+  ],
+  "critical_code_review_comments": [
+    "Most likely root cause for the Radix overlay 0x0 bbox: shadcn ui components (dropdown-menu.jsx, select.jsx, popover.jsx) reference utility classes like data-[state=open]:animate-in or fixed positioning that may not be picked up by the Tailwind JIT — verify tailwind.config.js content array includes './src/components/ui/**/*.{js,jsx,ts,tsx}'.",
+    "ExportPdfButton uses async handlers that re-render with busy state; check that the menu doesn't rely on `disabled` attribute that prevents items from rendering.",
+    "Pie slice onClick: in Recharts, onClick on <Pie> fires with (data, index, event) — confirm handler shape matches; also <Cell> children don't receive onClick directly."
+  ],
+  "updated_files": [],
+  "success_rate": {"frontend": "55% — drill-downs & static rendering work; Radix overlay-based filters & PDF export menu fully blocked"},
+  "test_credentials": "test@channelbi.com / password (any creds work, mock auth)",
+  "seed_data_creation": "None",
+  "retest_needed": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Drill-down navigation routes and detail pages were all verified working. The Radix overlay rendering bug is reproducible: open https://deposit-lens.preview.emergentagent.com/dashboard, click [data-testid='export-pdf-btn'] — button toggles data-state='open' but the menu content has bbox 0x0. JS query for [data-testid='export-pdf-quick'] returns the element but its getBoundingClientRect() is all zeros, and Playwright reports html intercepts pointer events. Fix this CSS/portal issue first, then retest region change, date filter apply, and both PDF download flows.",
+  "rca_of_the_issue": "Hypothesis: The shadcn/ui DropdownMenu/Select/Popover Content components are mounted via Radix Portal but their CSS classes (likely fixed/absolute positioning + animation classes like data-[state=open]:animate-in) are not being applied — resulting in elements existing in DOM with no width/height. This is most often caused by tailwind.config.js content globs not including the ui component path so Tailwind purges those utility classes in production-like build."
+}

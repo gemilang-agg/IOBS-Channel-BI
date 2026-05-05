@@ -5,6 +5,8 @@ import { ThemeProvider } from "./context/ThemeContext";
 import { AuthProvider } from "./context/AuthContext";
 import { LogoProvider } from "./context/LogoContext";
 import { SidebarProvider } from "./context/SidebarContext";
+import { FilterProvider } from "./context/FilterContext";
+import { ExportProvider } from "./context/ExportContext";
 import { DashboardLayout } from "./components/layout/DashboardLayout";
 import LoginPage from "./pages/LoginPage";
 import ExecutiveDashboard from "./pages/ExecutiveDashboard";
@@ -16,6 +18,9 @@ import ChannelDashboard from "./pages/ChannelDashboard";
 import RiskDashboard from "./pages/RiskDashboard";
 import ReportCenter from "./pages/ReportCenter";
 import SettingsPage from "./pages/SettingsPage";
+import RegionDetail from "./pages/details/RegionDetail";
+import ProductDetail from "./pages/details/ProductDetail";
+import BranchDetail from "./pages/details/BranchDetail";
 
 // Remove external badges/watermarks
 function useRemoveWatermarks() {
@@ -73,29 +78,37 @@ function App() {
       <AuthProvider>
         <LogoProvider>
           <SidebarProvider>
-            <BrowserRouter>
-              <Routes>
-                {/* Public Routes */}
-                <Route path="/login" element={<LoginPage />} />
-                
-                {/* Protected Dashboard Routes */}
-                <Route element={<DashboardLayout />}>
-                  <Route path="/dashboard" element={<ExecutiveDashboard />} />
-                  <Route path="/deposits" element={<DepositsDashboard />} />
-                  <Route path="/lending" element={<LendingDashboard />} />
-                  <Route path="/customers" element={<CustomerDashboard />} />
-                  <Route path="/branches" element={<BranchDashboard />} />
-                  <Route path="/channels" element={<ChannelDashboard />} />
-                  <Route path="/risk" element={<RiskDashboard />} />
-                  <Route path="/reports" element={<ReportCenter />} />
-                  <Route path="/settings" element={<SettingsPage />} />
-                </Route>
-                
-                {/* Redirect root to dashboard */}
-                <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                <Route path="*" element={<Navigate to="/dashboard" replace />} />
-              </Routes>
-            </BrowserRouter>
+            <FilterProvider>
+              <ExportProvider>
+                <BrowserRouter>
+                  <Routes>
+                    {/* Public Routes */}
+                    <Route path="/login" element={<LoginPage />} />
+
+                    {/* Protected Dashboard Routes */}
+                    <Route element={<DashboardLayout />}>
+                      <Route path="/dashboard" element={<ExecutiveDashboard />} />
+                      <Route path="/deposits" element={<DepositsDashboard />} />
+                      <Route path="/lending" element={<LendingDashboard />} />
+                      <Route path="/customers" element={<CustomerDashboard />} />
+                      <Route path="/branches" element={<BranchDashboard />} />
+                      <Route path="/channels" element={<ChannelDashboard />} />
+                      <Route path="/risk" element={<RiskDashboard />} />
+                      <Route path="/reports" element={<ReportCenter />} />
+                      <Route path="/settings" element={<SettingsPage />} />
+                      {/* Drill-down detail pages */}
+                      <Route path="/details/region/:region" element={<RegionDetail />} />
+                      <Route path="/details/product/:product" element={<ProductDetail />} />
+                      <Route path="/details/branch/:branch" element={<BranchDetail />} />
+                    </Route>
+
+                    {/* Redirect root to dashboard */}
+                    <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                    <Route path="*" element={<Navigate to="/dashboard" replace />} />
+                  </Routes>
+                </BrowserRouter>
+              </ExportProvider>
+            </FilterProvider>
           </SidebarProvider>
         </LogoProvider>
       </AuthProvider>

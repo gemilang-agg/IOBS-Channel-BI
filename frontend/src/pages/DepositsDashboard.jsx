@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Wallet, Landmark, PlusCircle, Moon, DollarSign, Percent } from 'lucide-react';
 import { KPICard } from '../components/dashboard/KPICard';
 import { DataTable } from '../components/dashboard/DataTable';
@@ -13,6 +14,9 @@ import {
   TopRegionsGrowthChart,
   DormantAccountsCard
 } from './deposits/DepositsCharts';
+import { useFilters } from '../context/FilterContext';
+import { useExportMeta } from '../context/ExportContext';
+import { filterByDateRange } from '../lib/dataFilters';
 
 const kpiIcons = {
   'CASA Balance': Wallet,
@@ -31,6 +35,24 @@ const branchColumns = [
 ];
 
 export default function DepositsDashboard() {
+  const { dateRange } = useFilters();
+  const { registerExportMeta } = useExportMeta();
+  const filteredCasa = filterByDateRange(casaTrendData, dateRange);
+
+  useEffect(() => {
+    registerExportMeta({
+      title: 'Deposits & CASA Dashboard',
+      kpis: Object.values(depositKPIs),
+      tables: [
+        {
+          title: 'Branch Deposit Performance',
+          head: [['Branch', 'Deposits (M)', 'Growth', 'Accounts']],
+          body: branchDepositPerformance.map((b) => [b.branch, `$${b.deposits}M`, `${b.growth > 0 ? '+' : ''}${b.growth}%`, b.accounts.toLocaleString()])
+        }
+      ]
+    });
+  }, [registerExportMeta]);
+
   return (
     <div className="space-y-6" data-testid="deposits-dashboard">
       <div>
@@ -51,7 +73,7 @@ export default function DepositsDashboard() {
 
       {/* Charts Row 1 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <CASATrendChart data={casaTrendData} />
+        <CASATrendChart data={filteredCasa} />
         <DepositMixChart data={depositMixData} />
       </div>
 

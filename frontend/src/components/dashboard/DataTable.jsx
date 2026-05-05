@@ -107,7 +107,8 @@ export function DataTable({
   data, 
   title,
   className,
-  showRank = false 
+  showRank = false,
+  onRowClick
 }) {
   return (
     <div 
@@ -150,7 +151,12 @@ export function DataTable({
             {data.map((row, index) => (
               <TableRow 
                 key={row.id || `row-${index}`}
-                className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
+                className={cn(
+                  "hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors",
+                  onRowClick && "cursor-pointer"
+                )}
+                onClick={onRowClick ? () => onRowClick(row) : undefined}
+                data-testid={onRowClick ? `data-table-row-${index}` : undefined}
               >
                 {showRank && (
                   <TableCell className="text-center font-medium text-slate-500">

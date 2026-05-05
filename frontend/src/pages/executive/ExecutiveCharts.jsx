@@ -94,13 +94,23 @@ export function LoanPortfolioTrendChart({ data }) {
   );
 }
 
-export function RevenueByProductChart({ data }) {
+export function RevenueByProductChart({ data, onProductClick }) {
   return (
     <ChartCard title="Revenue by Product" subtitle="Current period distribution">
       <div className="h-64 kiosk-sm:h-72 kiosk:h-80">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
-            <Pie data={data} cx="50%" cy="50%" innerRadius={60} outerRadius={90} paddingAngle={2} dataKey="value">
+            <Pie
+              data={data}
+              cx="50%"
+              cy="50%"
+              innerRadius={60}
+              outerRadius={90}
+              paddingAngle={2}
+              dataKey="value"
+              onClick={(slice) => onProductClick?.(slice)}
+              style={onProductClick ? { cursor: 'pointer' } : undefined}
+            >
               {data.map((entry, index) => (
                 <Cell key={`cell-${entry.name}`} fill={COLORS[index % COLORS.length]} />
               ))}
@@ -121,19 +131,26 @@ export function RevenueByProductChart({ data }) {
   );
 }
 
-export function RegionPerformanceChart({ data }) {
+export function RegionPerformanceChart({ data, onRegionClick }) {
   return (
     <ChartCard title="Region Performance" subtitle="Deposits & Loans by Region" className="lg:col-span-2">
       <div className="h-64 kiosk-sm:h-72 kiosk:h-80">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data} layout="vertical">
+          <BarChart
+            data={data}
+            layout="vertical"
+            onClick={(e) => {
+              const row = e?.activePayload?.[0]?.payload;
+              if (row?.region) onRegionClick?.(row);
+            }}
+          >
             <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" horizontal={false} />
             <XAxis type="number" axisLine={false} tickLine={false} tick={{ fill: '#64748B', fontSize: 12 }} tickFormatter={(v) => `$${v}B`} />
             <YAxis type="category" dataKey="region" axisLine={false} tickLine={false} tick={{ fill: '#64748B', fontSize: 12 }} width={60} />
             <Tooltip content={<CustomTooltip />} />
             <Legend />
-            <Bar dataKey="deposits" name="Deposits" fill="#3B82F6" radius={[0, 4, 4, 0]} />
-            <Bar dataKey="loans" name="Loans" fill="#06B6D4" radius={[0, 4, 4, 0]} />
+            <Bar dataKey="deposits" name="Deposits" fill="#3B82F6" radius={[0, 4, 4, 0]} style={onRegionClick ? { cursor: 'pointer' } : undefined} />
+            <Bar dataKey="loans" name="Loans" fill="#06B6D4" radius={[0, 4, 4, 0]} style={onRegionClick ? { cursor: 'pointer' } : undefined} />
           </BarChart>
         </ResponsiveContainer>
       </div>

@@ -1,14 +1,12 @@
 import { useState } from 'react';
-import { 
-  Search, 
-  Bell, 
-  Moon, 
-  Sun, 
-  Download,
+import {
+  Search,
+  Bell,
+  Moon,
+  Sun,
   ChevronDown,
   LogOut,
-  User,
-  Calendar
+  User
 } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
@@ -23,26 +21,17 @@ import {
 import { Input } from '../ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Badge } from '../ui/badge';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../ui/select';
+import { RegionFilter } from '../filters/RegionFilter';
+import { DateRangeFilter } from '../filters/DateRangeFilter';
+import { ExportPdfButton } from '../topbar/ExportPdfButton';
 
 export function Topbar() {
   const { isDarkMode, toggleTheme } = useTheme();
   const { user, logout } = useAuth();
   const [notifications] = useState(3);
 
-  const handleExportPDF = () => {
-    // Mock export functionality
-    alert('Export to PDF initiated. In production, this would generate a report.');
-  };
-
   return (
-    <header 
+    <header
       className="sticky top-0 z-30 h-16 kiosk-sm:h-20 kiosk:h-24 border-b border-slate-200 dark:border-slate-700/50 bg-white/80 dark:bg-slate-900/80 glass"
       data-testid="topbar"
     >
@@ -59,42 +48,13 @@ export function Topbar() {
             />
           </div>
 
-          {/* Region Filter */}
-          <Select defaultValue="all">
-            <SelectTrigger className="w-40 bg-slate-100 dark:bg-slate-800 border-0" data-testid="region-filter">
-              <SelectValue placeholder="All Regions" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Regions</SelectItem>
-              <SelectItem value="north">North</SelectItem>
-              <SelectItem value="south">South</SelectItem>
-              <SelectItem value="east">East</SelectItem>
-              <SelectItem value="west">West</SelectItem>
-              <SelectItem value="central">Central</SelectItem>
-            </SelectContent>
-          </Select>
-
-          {/* Date Range */}
-          <Button variant="outline" className="gap-2 bg-slate-100 dark:bg-slate-800 border-0" data-testid="date-filter">
-            <Calendar className="w-4 h-4" />
-            <span className="text-sm">Jan 2024</span>
-            <ChevronDown className="w-3 h-3" />
-          </Button>
+          <RegionFilter />
+          <DateRangeFilter />
         </div>
 
         {/* Right Section - Actions */}
         <div className="flex items-center gap-3">
-          {/* Export Button */}
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="gap-2"
-            onClick={handleExportPDF}
-            data-testid="export-pdf-btn"
-          >
-            <Download className="w-4 h-4" />
-            Export PDF
-          </Button>
+          <ExportPdfButton />
 
           {/* Theme Toggle */}
           <Button
@@ -110,15 +70,15 @@ export function Topbar() {
           {/* Notifications */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button 
-                variant="ghost" 
-                size="icon" 
+              <Button
+                variant="ghost"
+                size="icon"
                 className="relative text-slate-600 dark:text-slate-400"
                 data-testid="notifications-btn"
               >
                 <Bell className="w-5 h-5" />
                 {notifications > 0 && (
-                  <Badge 
+                  <Badge
                     className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs bg-red-500 border-2 border-white dark:border-slate-900"
                   >
                     {notifications}
@@ -148,8 +108,8 @@ export function Topbar() {
           {/* User Menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 className="gap-2 pl-2 pr-3"
                 data-testid="user-menu-btn"
               >
@@ -172,7 +132,7 @@ export function Topbar() {
                 Profile
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem 
+              <DropdownMenuItem
                 onClick={logout}
                 className="text-red-600 dark:text-red-400"
                 data-testid="logout-btn"

@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { 
   CreditCard, 
   Wallet, 
@@ -20,6 +21,9 @@ import {
   DelinquencyBucketsChart,
   RiskHighlightsPanel
 } from './lending/LendingSections';
+import { useFilters } from '../context/FilterContext';
+import { useExportMeta } from '../context/ExportContext';
+import { filterByDateRange } from '../lib/dataFilters';
 
 const kpiIcons = {
   'Loan Disbursement': CreditCard,
@@ -38,6 +42,24 @@ const portfolioColumns = [
 ];
 
 export default function LendingDashboard() {
+  const { dateRange } = useFilters();
+  const { registerExportMeta } = useExportMeta();
+  const filteredDisbursement = filterByDateRange(disbursementTrend, dateRange);
+
+  useEffect(() => {
+    registerExportMeta({
+      title: 'Lending Dashboard',
+      kpis: Object.values(lendingKPIs),
+      tables: [
+        {
+          title: 'Loan Portfolio',
+          head: [['Product', 'Amount (B)', 'NPL %', 'Growth']],
+          body: loanPortfolio.map((p) => [p.product, `$${p.amount}B`, `${p.npl}%`, `${p.growth > 0 ? '+' : ''}${p.growth}%`])
+        }
+      ]
+    });
+  }, [registerExportMeta]);
+
   return (
     <div className="space-y-6" data-testid="lending-dashboard">
       <div>
@@ -56,7 +78,7 @@ export default function LendingDashboard() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <DisbursementTrendChart data={disbursementTrend} />
+        <DisbursementTrendChart data={filteredDisbursement} />
         <DelinquencyBucketsChart data={delinquencyBuckets} />
       </div>
 

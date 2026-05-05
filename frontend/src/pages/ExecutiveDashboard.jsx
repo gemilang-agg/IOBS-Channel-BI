@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   Wallet, 
   CreditCard, 
@@ -23,6 +25,9 @@ import {
   RevenueByProductChart,
   RegionPerformanceChart
 } from './executive/ExecutiveCharts';
+import { useFilters } from '../context/FilterContext';
+import { useExportMeta } from '../context/ExportContext';
+import { applyFilters, filterByDateRange, scaleKpisByRegion } from '../lib/dataFilters';
 
 const kpiIcons = {
   'Total Deposits': Wallet,
@@ -41,10 +46,38 @@ const regionColumns = [
   { key: 'growth', label: 'Growth', type: 'trend', align: 'right' }
 ];
 
+const slug = (s) => s.toLowerCase().replace(/\s+/g, '-');
+
 export default function ExecutiveDashboard() {
+  const navigate = useNavigate();
+  const { dateRange, region } = useFilters();
+  const { registerExportMeta } = useExportMeta();
+
+  const filteredDeposits = filterByDateRange(depositTrendData, dateRange);
+  const filteredLoans = filterByDateRange(loanTrendData, dateRange);
+  const filteredRegion = applyFilters(regionPerformance, { region });
+  const kpis = scaleKpisByRegion(executiveKPIs, region, regionPerformance);
+
+  useEffect(() => {
+    registerExportMeta({
+      title: 'Executive Dashboard',
+      subtitle: region === 'all' ? 'All regions' : `${region} region`,
+      kpis: Object.values(kpis),
+      tables: [
+        {
+          title: 'Regional Performance',
+          head: [['Region', 'Deposits (B)', 'Loans (B)', 'Customers', 'Growth']],
+          body: filteredRegion.map((r) => [r.region, `$${r.deposits}B`, `$${r.loans}B`, r.customers.toLocaleString(), `${r.growth > 0 ? '+' : ''}${r.growth}%`])
+        }
+      ]
+    });
+  }, [kpis, filteredRegion, region, registerExportMeta]);
+
+  const handleRegionClick = (row) => navigate(`/details/region/${row.region.toLowerCase()}`);
+  const handleProductClick = (slice) => navigate(`/details/product/${slug(slice.name)}`);
+
   return (
     <div className="space-y-6 kiosk-sm:space-y-8 kiosk:space-y-10" data-testid="executive-dashboard">
-      {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="font-heading text-2xl kiosk-sm:text-3xl kiosk:text-4xl font-bold text-slate-900 dark:text-white">
@@ -56,32 +89,29 @@ export default function ExecutiveDashboard() {
         </div>
       </div>
 
-      {/* KPI Cards */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 kiosk-sm:gap-5 kiosk:gap-6">
-        {Object.entries(executiveKPIs).map(([key, kpi]) => (
+        {Object.entries(kpis).map(([key, kpi]) => (
           <KPICard key={key} {...kpi} icon={kpiIcons[kpi.label]} />
         ))}
       </div>
 
-      {/* Charts Row 1 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 kiosk-sm:gap-8 kiosk:gap-10">
-        <DepositGrowthChart data={depositTrendData} />
-        <LoanPortfolioTrendChart data={loanTrendData} />
+        <DepositGrowthChart data={filteredDeposits} />
+        <LoanPortfolioTrendChart data={filteredLoans} />
       </div>
 
-      {/* Charts Row 2 */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 kiosk-sm:gap-8 kiosk:gap-10">
-        <RevenueByProductChart data={revenueByProduct} />
-        <RegionPerformanceChart data={regionPerformance} />
+        <RevenueByProductChart data={revenueByProduct} onProductClick={handleProductClick} />
+        <RegionPerformanceChart data={filteredRegion} onRegionClick={handleRegionClick} />
       </div>
 
-      {/* Bottom Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 kiosk-sm:gap-8 kiosk:gap-10">
         <DataTable
           title="Regional Performance Summary"
           columns={regionColumns}
-          data={regionPerformance}
+          data={filteredRegion}
           className="lg:col-span-2"
+          onRowClick={handleRegionClick}
         />
         <AlertPanel alerts={alerts} />
       </div>

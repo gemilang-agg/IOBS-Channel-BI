@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { 
   Users, 
   UserPlus, 
@@ -20,6 +21,9 @@ import {
   ProductHoldingChart,
   CustomerInsightsPanel
 } from './customer/CustomerSections';
+import { useFilters } from '../context/FilterContext';
+import { useExportMeta } from '../context/ExportContext';
+import { filterByDateRange } from '../lib/dataFilters';
 
 const kpiIcons = {
   'Total Customers': Users,
@@ -31,6 +35,24 @@ const kpiIcons = {
 };
 
 export default function CustomerDashboard() {
+  const { dateRange } = useFilters();
+  const { registerExportMeta } = useExportMeta();
+  const filteredChurn = filterByDateRange(churnTrend, dateRange);
+
+  useEffect(() => {
+    registerExportMeta({
+      title: 'Customer 360 Analytics',
+      kpis: Object.values(customerKPIs),
+      tables: [
+        {
+          title: 'Customer Segmentation',
+          head: [['Segment', 'Share', 'Customers']],
+          body: customerSegmentation.map((s) => [s.segment, `${s.value}%`, s.count.toLocaleString()])
+        }
+      ]
+    });
+  }, [registerExportMeta]);
+
   return (
     <div className="space-y-6" data-testid="customer-dashboard">
       <div>
@@ -50,7 +72,7 @@ export default function CustomerDashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <CustomerSegmentationChart data={customerSegmentation} />
-        <ChurnTrendChart data={churnTrend} />
+        <ChurnTrendChart data={filteredChurn} />
       </div>
 
       <ProductHoldingChart data={productHolding} />

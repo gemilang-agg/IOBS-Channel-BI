@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { 
   Smartphone, 
   Monitor, 
@@ -21,6 +22,9 @@ import {
   FailedTxnTrendChart,
   TransactionByChannelChart
 } from './channel/ChannelCharts';
+import { useFilters } from '../context/FilterContext';
+import { useExportMeta } from '../context/ExportContext';
+import { filterByDateRange } from '../lib/dataFilters';
 
 const kpiIcons = {
   'Active Mobile Users': Smartphone,
@@ -39,6 +43,25 @@ const channelColumns = [
 ];
 
 export default function ChannelDashboard() {
+  const { dateRange } = useFilters();
+  const { registerExportMeta } = useExportMeta();
+  const filteredAdoption = filterByDateRange(digitalAdoptionTrend, dateRange);
+  const filteredFailed = filterByDateRange(failedTxnTrend, dateRange);
+
+  useEffect(() => {
+    registerExportMeta({
+      title: 'Digital Channel Dashboard',
+      kpis: Object.values(channelKPIs),
+      tables: [
+        {
+          title: 'Channel Performance',
+          head: [['Channel', 'Transactions (M)', 'Value (B)', 'Growth']],
+          body: transactionByChannel.map((c) => [c.channel, c.transactions, `$${c.value}B`, `${c.growth > 0 ? '+' : ''}${c.growth}%`])
+        }
+      ]
+    });
+  }, [registerExportMeta]);
+
   return (
     <div className="space-y-6" data-testid="channel-dashboard">
       <div>
@@ -57,8 +80,8 @@ export default function ChannelDashboard() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <DigitalAdoptionChart data={digitalAdoptionTrend} />
-        <FailedTxnTrendChart data={failedTxnTrend} />
+        <DigitalAdoptionChart data={filteredAdoption} />
+        <FailedTxnTrendChart data={filteredFailed} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

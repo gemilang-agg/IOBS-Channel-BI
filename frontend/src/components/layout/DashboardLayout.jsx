@@ -43,7 +43,7 @@ export function DashboardLayout() {
         )}
       >
         <Topbar />
-        <main className="p-6 kiosk-sm:p-8 kiosk:p-10 animate-fade-in">
+        <main id="dashboard-export-root" className="p-6 kiosk-sm:p-8 kiosk:p-10 animate-fade-in">
           <Outlet />
         </main>
       </div>
