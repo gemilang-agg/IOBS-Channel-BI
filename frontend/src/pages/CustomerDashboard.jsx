@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { 
   Users, 
   UserPlus, 
@@ -13,7 +13,8 @@ import {
   customerSegmentation, 
   productHolding,
   churnTrend,
-  customerInsights 
+  customerInsights,
+  regionPerformance
 } from '../data/mockData';
 import {
   CustomerSegmentationChart,
@@ -23,7 +24,7 @@ import {
 } from './customer/CustomerSections';
 import { useFilters } from '../context/FilterContext';
 import { useExportMeta } from '../context/ExportContext';
-import { filterByDateRange } from '../lib/dataFilters';
+import { filterByDateRange, scaleKpisByRegion } from '../lib/dataFilters';
 
 const kpiIcons = {
   'Total Customers': Users,
@@ -35,14 +36,16 @@ const kpiIcons = {
 };
 
 export default function CustomerDashboard() {
-  const { dateRange } = useFilters();
+  const { dateRange, region } = useFilters();
   const { registerExportMeta } = useExportMeta();
-  const filteredChurn = filterByDateRange(churnTrend, dateRange);
+  const filteredChurn = useMemo(() => filterByDateRange(churnTrend, dateRange), [dateRange]);
+  const kpis = useMemo(() => scaleKpisByRegion(customerKPIs, region, regionPerformance), [region]);
 
   useEffect(() => {
     registerExportMeta({
       title: 'Customer 360 Analytics',
-      kpis: Object.values(customerKPIs),
+      subtitle: region === 'all' ? 'All regions' : `${region} region`,
+      kpis: Object.values(kpis),
       tables: [
         {
           title: 'Customer Segmentation',
@@ -51,7 +54,7 @@ export default function CustomerDashboard() {
         }
       ]
     });
-  }, [registerExportMeta]);
+  }, [kpis, region, registerExportMeta]);
 
   return (
     <div className="space-y-6" data-testid="customer-dashboard">
@@ -65,7 +68,7 @@ export default function CustomerDashboard() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        {Object.entries(customerKPIs).map(([key, kpi]) => (
+        {Object.entries(kpis).map(([key, kpi]) => (
           <KPICard key={key} {...kpi} icon={kpiIcons[kpi.label]} />
         ))}
       </div>

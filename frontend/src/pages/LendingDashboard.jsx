@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { 
   CreditCard, 
   Wallet, 
@@ -14,7 +14,8 @@ import {
   disbursementTrend, 
   delinquencyBuckets,
   loanPortfolio,
-  riskHighlights 
+  riskHighlights,
+  regionPerformance
 } from '../data/mockData';
 import {
   DisbursementTrendChart,
@@ -23,7 +24,7 @@ import {
 } from './lending/LendingSections';
 import { useFilters } from '../context/FilterContext';
 import { useExportMeta } from '../context/ExportContext';
-import { filterByDateRange } from '../lib/dataFilters';
+import { filterByDateRange, scaleKpisByRegion } from '../lib/dataFilters';
 
 const kpiIcons = {
   'Loan Disbursement': CreditCard,
@@ -42,14 +43,16 @@ const portfolioColumns = [
 ];
 
 export default function LendingDashboard() {
-  const { dateRange } = useFilters();
+  const { dateRange, region } = useFilters();
   const { registerExportMeta } = useExportMeta();
-  const filteredDisbursement = filterByDateRange(disbursementTrend, dateRange);
+  const filteredDisbursement = useMemo(() => filterByDateRange(disbursementTrend, dateRange), [dateRange]);
+  const kpis = useMemo(() => scaleKpisByRegion(lendingKPIs, region, regionPerformance), [region]);
 
   useEffect(() => {
     registerExportMeta({
       title: 'Lending Dashboard',
-      kpis: Object.values(lendingKPIs),
+      subtitle: region === 'all' ? 'All regions' : `${region} region`,
+      kpis: Object.values(kpis),
       tables: [
         {
           title: 'Loan Portfolio',
@@ -58,7 +61,7 @@ export default function LendingDashboard() {
         }
       ]
     });
-  }, [registerExportMeta]);
+  }, [kpis, region, registerExportMeta]);
 
   return (
     <div className="space-y-6" data-testid="lending-dashboard">
@@ -72,7 +75,7 @@ export default function LendingDashboard() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        {Object.entries(lendingKPIs).map(([key, kpi]) => (
+        {Object.entries(kpis).map(([key, kpi]) => (
           <KPICard key={key} {...kpi} icon={kpiIcons[kpi.label]} />
         ))}
       </div>

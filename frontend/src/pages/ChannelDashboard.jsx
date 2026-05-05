@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { 
   Smartphone, 
   Monitor, 
@@ -15,7 +15,8 @@ import {
   digitalAdoptionTrend, 
   transactionByChannel,
   failedTxnTrend,
-  channelAlerts 
+  channelAlerts,
+  regionPerformance
 } from '../data/mockData';
 import {
   DigitalAdoptionChart,
@@ -24,7 +25,7 @@ import {
 } from './channel/ChannelCharts';
 import { useFilters } from '../context/FilterContext';
 import { useExportMeta } from '../context/ExportContext';
-import { filterByDateRange } from '../lib/dataFilters';
+import { filterByDateRange, scaleKpisByRegion } from '../lib/dataFilters';
 
 const kpiIcons = {
   'Active Mobile Users': Smartphone,
@@ -43,15 +44,17 @@ const channelColumns = [
 ];
 
 export default function ChannelDashboard() {
-  const { dateRange } = useFilters();
+  const { dateRange, region } = useFilters();
   const { registerExportMeta } = useExportMeta();
-  const filteredAdoption = filterByDateRange(digitalAdoptionTrend, dateRange);
-  const filteredFailed = filterByDateRange(failedTxnTrend, dateRange);
+  const filteredAdoption = useMemo(() => filterByDateRange(digitalAdoptionTrend, dateRange), [dateRange]);
+  const filteredFailed = useMemo(() => filterByDateRange(failedTxnTrend, dateRange), [dateRange]);
+  const kpis = useMemo(() => scaleKpisByRegion(channelKPIs, region, regionPerformance), [region]);
 
   useEffect(() => {
     registerExportMeta({
       title: 'Digital Channel Dashboard',
-      kpis: Object.values(channelKPIs),
+      subtitle: region === 'all' ? 'All regions' : `${region} region`,
+      kpis: Object.values(kpis),
       tables: [
         {
           title: 'Channel Performance',
@@ -60,7 +63,7 @@ export default function ChannelDashboard() {
         }
       ]
     });
-  }, [registerExportMeta]);
+  }, [kpis, region, registerExportMeta]);
 
   return (
     <div className="space-y-6" data-testid="channel-dashboard">
@@ -74,7 +77,7 @@ export default function ChannelDashboard() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        {Object.entries(channelKPIs).map(([key, kpi]) => (
+        {Object.entries(kpis).map(([key, kpi]) => (
           <KPICard key={key} {...kpi} icon={kpiIcons[kpi.label]} />
         ))}
       </div>

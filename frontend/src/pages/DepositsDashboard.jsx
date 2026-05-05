@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Wallet, Landmark, PlusCircle, Moon, DollarSign, Percent } from 'lucide-react';
 import { KPICard } from '../components/dashboard/KPICard';
 import { DataTable } from '../components/dashboard/DataTable';
@@ -6,7 +6,8 @@ import {
   depositKPIs, 
   casaTrendData, 
   depositMixData,
-  branchDepositPerformance 
+  branchDepositPerformance,
+  regionPerformance
 } from '../data/mockData';
 import {
   CASATrendChart,
@@ -16,7 +17,7 @@ import {
 } from './deposits/DepositsCharts';
 import { useFilters } from '../context/FilterContext';
 import { useExportMeta } from '../context/ExportContext';
-import { filterByDateRange } from '../lib/dataFilters';
+import { filterByDateRange, scaleKpisByRegion } from '../lib/dataFilters';
 
 const kpiIcons = {
   'CASA Balance': Wallet,
@@ -35,14 +36,16 @@ const branchColumns = [
 ];
 
 export default function DepositsDashboard() {
-  const { dateRange } = useFilters();
+  const { dateRange, region } = useFilters();
   const { registerExportMeta } = useExportMeta();
-  const filteredCasa = filterByDateRange(casaTrendData, dateRange);
+  const filteredCasa = useMemo(() => filterByDateRange(casaTrendData, dateRange), [dateRange]);
+  const kpis = useMemo(() => scaleKpisByRegion(depositKPIs, region, regionPerformance), [region]);
 
   useEffect(() => {
     registerExportMeta({
       title: 'Deposits & CASA Dashboard',
-      kpis: Object.values(depositKPIs),
+      subtitle: region === 'all' ? 'All regions' : `${region} region`,
+      kpis: Object.values(kpis),
       tables: [
         {
           title: 'Branch Deposit Performance',
@@ -51,7 +54,7 @@ export default function DepositsDashboard() {
         }
       ]
     });
-  }, [registerExportMeta]);
+  }, [kpis, region, registerExportMeta]);
 
   return (
     <div className="space-y-6" data-testid="deposits-dashboard">
@@ -66,7 +69,7 @@ export default function DepositsDashboard() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        {Object.entries(depositKPIs).map(([key, kpi]) => (
+        {Object.entries(kpis).map(([key, kpi]) => (
           <KPICard key={key} {...kpi} icon={kpiIcons[kpi.label]} />
         ))}
       </div>

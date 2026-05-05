@@ -6,7 +6,7 @@ import {
   Users, 
   MessageSquare 
 } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { KPICard } from '../components/dashboard/KPICard';
 import { ChartCard } from '../components/dashboard/ChartCard';
@@ -34,7 +34,8 @@ import { Badge } from '../components/ui/badge';
 import { cn } from '../lib/utils';
 import { useFilters } from '../context/FilterContext';
 import { useExportMeta } from '../context/ExportContext';
-import { filterByDateRange } from '../lib/dataFilters';
+import { filterByDateRange, scaleKpisByRegion } from '../lib/dataFilters';
+import { regionPerformance } from '../data/mockData';
 
 const getNpsBadgeClass = (nps) => {
   if (nps >= 75) return "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400";
@@ -52,9 +53,10 @@ const slug = (s) => s.toLowerCase().replace(/\s+/g, '-');
 
 export default function BranchDashboard() {
   const navigate = useNavigate();
-  const { dateRange } = useFilters();
+  const { dateRange, region } = useFilters();
   const { registerExportMeta } = useExportMeta();
-  const filteredTarget = filterByDateRange(branchTargetVsActual, dateRange);
+  const filteredTarget = useMemo(() => filterByDateRange(branchTargetVsActual, dateRange), [dateRange]);
+  const kpis = useMemo(() => scaleKpisByRegion(branchKPIs, region, regionPerformance), [region]);
   const kpiIcons = {
     'Target Achievement': Target,
     'New Accounts': UserPlus,
@@ -88,7 +90,8 @@ export default function BranchDashboard() {
   useEffect(() => {
     registerExportMeta({
       title: 'Branch Performance Dashboard',
-      kpis: Object.values(branchKPIs),
+      subtitle: region === 'all' ? 'All regions' : `${region} region`,
+      kpis: Object.values(kpis),
       tables: [
         {
           title: 'Branch Leaderboard',
@@ -97,7 +100,7 @@ export default function BranchDashboard() {
         }
       ]
     });
-  }, [registerExportMeta]);
+  }, [kpis, region, registerExportMeta]);
 
   const handleBranchClick = (row) => navigate(`/details/branch/${slug(row.branch)}`);
 
@@ -115,7 +118,7 @@ export default function BranchDashboard() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        {Object.entries(branchKPIs).map(([key, kpi]) => (
+        {Object.entries(kpis).map(([key, kpi]) => (
           <KPICard
             key={key}
             {...kpi}

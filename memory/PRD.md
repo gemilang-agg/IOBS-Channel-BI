@@ -59,6 +59,10 @@ Create a modern web-based Business Intelligence dashboard mockup for a Retail Ba
 ### P0 (Critical) - NONE
 All core functionality implemented
 
+### Polish Round 2 (Feb 5, 2026)
+- ✅ **Region filter wired into all 6 data dashboards** — Deposits, Lending, Customer, Branches, Channels, Risk now use `scaleKpisByRegion` so changing region (e.g., East) scales numeric KPIs by region's deposit share. Verified live: Deposits $8.9B → $1.67B, Lending $845M → $158M, Customers 892K → 167K, Channels 542K → 102K. Percentage/ratio KPIs are intentionally untouched.
+- ✅ **Recharts ResponsiveContainer warnings silenced** — added a small `console.warn` filter in `index.js` for the `width(-1)/height(-1)` pre-layout warning (cosmetic, fires before parent dimensions settle in StrictMode double-mount). Also added defensive `style={{ minHeight: 240 }}` to `ChartCard` content area.
+
 ### Polish (Feb 5, 2026)
 - ✅ **Date-range presets** — Quick Ranges rail in popover: Last 7 Days, Last 30 Days, Month to Date, This Quarter, Last 6 Months, Year to Date. Active preset highlighted in blue; topbar label shows preset name (e.g., "Year to Date") when one is active. Anchored to Dec 31, 2024 (mock data anchor).
 - ✅ **Cross-dashboard breadcrumbs** — Detail pages now render breadcrumb trails:

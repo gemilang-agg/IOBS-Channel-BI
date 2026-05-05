@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { 
   AlertTriangle, 
   Clock, 
@@ -14,7 +14,8 @@ import {
   riskKPIs, 
   delinquencyTrend, 
   recoveryByTeam,
-  productRiskComparison 
+  productRiskComparison,
+  regionPerformance
 } from '../data/mockData';
 import {
   LineChart,
@@ -32,7 +33,7 @@ import { Badge } from '../components/ui/badge';
 import { cn } from '../lib/utils';
 import { useFilters } from '../context/FilterContext';
 import { useExportMeta } from '../context/ExportContext';
-import { filterByDateRange } from '../lib/dataFilters';
+import { filterByDateRange, scaleKpisByRegion } from '../lib/dataFilters';
 
 const getRateBadgeClass = (rate) => {
   if (rate >= 80) return "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400";
@@ -53,14 +54,16 @@ const getNplStatusLabel = (npl) => {
 };
 
 export default function RiskDashboard() {
-  const { dateRange } = useFilters();
+  const { dateRange, region } = useFilters();
   const { registerExportMeta } = useExportMeta();
-  const filteredDelinquency = filterByDateRange(delinquencyTrend, dateRange);
+  const filteredDelinquency = useMemo(() => filterByDateRange(delinquencyTrend, dateRange), [dateRange]);
+  const kpis = useMemo(() => scaleKpisByRegion(riskKPIs, region, regionPerformance), [region]);
 
   useEffect(() => {
     registerExportMeta({
       title: 'Risk & Collections Dashboard',
-      kpis: Object.values(riskKPIs),
+      subtitle: region === 'all' ? 'All regions' : `${region} region`,
+      kpis: Object.values(kpis),
       tables: [
         {
           title: 'Product Risk Comparison',
@@ -69,7 +72,7 @@ export default function RiskDashboard() {
         }
       ]
     });
-  }, [registerExportMeta]);
+  }, [kpis, region, registerExportMeta]);
   const kpiIcons = {
     'PAR 30': AlertTriangle,
     'PAR 90': Clock,
@@ -121,7 +124,7 @@ export default function RiskDashboard() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        {Object.entries(riskKPIs).map(([key, kpi]) => (
+        {Object.entries(kpis).map(([key, kpi]) => (
           <KPICard
             key={key}
             {...kpi}

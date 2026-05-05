@@ -29,7 +29,7 @@ export function ChartCard({ title, subtitle, children, actions, className }) {
           )}
         </div>
       </div>
-      <div className="p-5 kiosk-sm:p-6 kiosk:p-7 pt-2">
+      <div className="p-5 kiosk-sm:p-6 kiosk:p-7 pt-2" style={{ minHeight: 240 }}>
         {children}
       </div>
     </div>
