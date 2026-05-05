@@ -59,6 +59,19 @@ Create a modern web-based Business Intelligence dashboard mockup for a Retail Ba
 ### P0 (Critical) - NONE
 All core functionality implemented
 
+### Code Quality Fixes (Feb 5, 2026)
+- ✅ Fixed array-index-as-key in LoginPage, LendingDashboard (delinquency buckets, risk highlights), ExecutiveDashboard (CustomTooltip, Pie cells), CustomerDashboard (segmentation cells, insights)
+- ✅ Refactored nested ternaries in RiskDashboard (recovery rate, NPL status) and BranchDashboard (NPS, achievement color) into named helper functions
+- ✅ Reduced Sidebar complexity by extracting `SidebarNavItem` and `SidebarLogo` subcomponents
+- ✅ Component extraction (split large pages into focused subcomponents under `pages/<dashboard>/`):
+  - `pages/executive/ExecutiveCharts.jsx` (4 charts + tooltip)
+  - `pages/deposits/DepositsCharts.jsx` (4 charts)
+  - `pages/lending/LendingSections.jsx` (2 charts + risk highlights panel)
+  - `pages/customer/CustomerSections.jsx` (3 charts + insights panel)
+  - `pages/channel/ChannelCharts.jsx` (3 charts)
+  - `pages/settings/SettingsSections.jsx` (6 sections) and `pages/settings/exportData.js` (download data + helper)
+- All page files now <90 lines (previously 220-360 lines)
+
 ### P1 (High Priority)
 - Real backend integration with actual data APIs
 - Proper authentication with JWT tokens

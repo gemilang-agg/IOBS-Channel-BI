@@ -1,6 +1,47 @@
 import { TrendingUp, TrendingDown } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
+const NEGATIVE_METRICS = [
+  'delinquency', 'complaint', 'dormant', 'failed', 
+  'cost of funds', 'par', 'npl', 'churn'
+];
+
+function isNegativeMetric(label) {
+  const lowerLabel = label.toLowerCase();
+  return NEGATIVE_METRICS.some(metric => lowerLabel.includes(metric));
+}
+
+function formatValue(val, unit) {
+  if (unit === 'B') return `$${val}B`;
+  if (unit === 'M') return `$${val}M`;
+  if (unit === '%') return `${val}%`;
+  if (val >= 1000000) return `${(val / 1000000).toFixed(1)}M`;
+  if (val >= 1000) return `${(val / 1000).toFixed(1)}K`;
+  return val.toLocaleString();
+}
+
+function getTrendColor(isPositive, isNegativeGood) {
+  if (isNegativeGood) {
+    return isPositive ? 'text-red-500' : 'text-emerald-500';
+  }
+  return isPositive ? 'text-emerald-500' : 'text-red-500';
+}
+
+function TrendIndicator({ isPositive, change }) {
+  const TrendIcon = isPositive ? TrendingUp : TrendingDown;
+  const prefix = isPositive ? '+' : '';
+  
+  return (
+    <>
+      <TrendIcon className="w-4 h-4 kiosk:w-5 kiosk:h-5" />
+      <span className="text-sm kiosk-sm:text-base kiosk:text-lg font-medium tabular-nums">
+        {prefix}{change}%
+      </span>
+      <span className="text-xs kiosk-sm:text-sm kiosk:text-base text-slate-400 ml-1">vs last period</span>
+    </>
+  );
+}
+
 export function KPICard({ 
   label, 
   value, 
@@ -11,28 +52,8 @@ export function KPICard({
   className 
 }) {
   const isPositive = trend === 'up';
-  const isNegativeGood = label.toLowerCase().includes('delinquency') || 
-                         label.toLowerCase().includes('complaint') ||
-                         label.toLowerCase().includes('dormant') ||
-                         label.toLowerCase().includes('failed') ||
-                         label.toLowerCase().includes('cost of funds') ||
-                         label.toLowerCase().includes('par') ||
-                         label.toLowerCase().includes('npl') ||
-                         label.toLowerCase().includes('churn');
-  
-  // For metrics where "down" is good (like complaints, delinquency, cost of funds)
-  const displayColor = isNegativeGood 
-    ? (isPositive ? 'text-red-500' : 'text-emerald-500')
-    : (isPositive ? 'text-emerald-500' : 'text-red-500');
-
-  const formatValue = (val, unit) => {
-    if (unit === 'B') return `$${val}B`;
-    if (unit === 'M') return `$${val}M`;
-    if (unit === '%') return `${val}%`;
-    if (val >= 1000000) return `${(val / 1000000).toFixed(1)}M`;
-    if (val >= 1000) return `${(val / 1000).toFixed(1)}K`;
-    return val.toLocaleString();
-  };
+  const isNegativeGood = isNegativeMetric(label);
+  const displayColor = getTrendColor(isPositive, isNegativeGood);
 
   return (
     <div 
@@ -59,15 +80,7 @@ export function KPICard({
       
       {change !== undefined && (
         <div className={cn("flex items-center gap-1 mt-3 kiosk:mt-4", displayColor)}>
-          {isPositive ? (
-            <TrendingUp className="w-4 h-4 kiosk:w-5 kiosk:h-5" />
-          ) : (
-            <TrendingDown className="w-4 h-4 kiosk:w-5 kiosk:h-5" />
-          )}
-          <span className="text-sm kiosk-sm:text-base kiosk:text-lg font-medium tabular-nums">
-            {isPositive ? '+' : ''}{change}%
-          </span>
-          <span className="text-xs kiosk-sm:text-sm kiosk:text-base text-slate-400 ml-1">vs last period</span>
+          <TrendIndicator isPositive={isPositive} change={change} />
         </div>
       )}
     </div>

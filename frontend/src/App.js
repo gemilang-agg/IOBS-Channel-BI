@@ -1,5 +1,5 @@
 import "@/index.css";
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "./context/ThemeContext";
 import { AuthProvider } from "./context/AuthContext";
@@ -19,45 +19,40 @@ import SettingsPage from "./pages/SettingsPage";
 
 // Remove external badges/watermarks
 function useRemoveWatermarks() {
-  useEffect(() => {
-    const removeWatermarks = () => {
-      // Find and remove elements containing "Made with Emergent"
-      const allElements = document.querySelectorAll('*');
-      allElements.forEach(el => {
-        if (el.textContent?.includes('Made with Emergent') || 
-            el.innerHTML?.includes('Made with Emergent')) {
-          const parent = el.closest('div[style*="position: fixed"]');
-          if (parent) {
-            parent.style.display = 'none';
-            parent.remove();
-          } else if (el.style?.position === 'fixed') {
-            el.style.display = 'none';
-            el.remove();
-          }
-        }
-      });
-      
-      // Remove fixed positioned elements at bottom right
-      document.querySelectorAll('body > div').forEach(el => {
-        const style = el.getAttribute('style') || '';
-        if (style.includes('position: fixed') && 
-            (style.includes('bottom') || style.includes('right')) &&
-            style.includes('z-index')) {
+  const removeWatermarks = useCallback(() => {
+    const allElements = document.querySelectorAll('*');
+    allElements.forEach(el => {
+      if (el.textContent?.includes('Made with Emergent') || 
+          el.innerHTML?.includes('Made with Emergent')) {
+        const parent = el.closest('div[style*="position: fixed"]');
+        if (parent) {
+          parent.style.display = 'none';
+          parent.remove();
+        } else if (el.style?.position === 'fixed') {
           el.style.display = 'none';
           el.remove();
         }
-      });
-    };
+      }
+    });
+    
+    document.querySelectorAll('body > div').forEach(el => {
+      const style = el.getAttribute('style') || '';
+      if (style.includes('position: fixed') && 
+          (style.includes('bottom') || style.includes('right')) &&
+          style.includes('z-index')) {
+        el.style.display = 'none';
+        el.remove();
+      }
+    });
+  }, []);
 
-    // Run immediately
+  useEffect(() => {
     removeWatermarks();
     
-    // Run after short delay for dynamically injected content
     const timeout1 = setTimeout(removeWatermarks, 100);
     const timeout2 = setTimeout(removeWatermarks, 500);
     const timeout3 = setTimeout(removeWatermarks, 1000);
     
-    // Set up observer for dynamically added elements
     const observer = new MutationObserver(removeWatermarks);
     observer.observe(document.body, { childList: true, subtree: true });
 
@@ -67,7 +62,7 @@ function useRemoveWatermarks() {
       clearTimeout(timeout3);
       observer.disconnect();
     };
-  }, []);
+  }, [removeWatermarks]);
 }
 
 function App() {

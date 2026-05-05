@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
 const AuthContext = createContext();
 
@@ -8,7 +8,6 @@ export function AuthProvider({ children }) {
       const saved = localStorage.getItem('channelbi-user');
       if (saved) {
         const parsed = JSON.parse(saved);
-        // Validate that parsed data has required fields
         if (parsed && parsed.email && parsed.name) {
           return parsed;
         }
@@ -20,21 +19,21 @@ export function AuthProvider({ children }) {
     return null;
   });
 
-  // Sync state with localStorage on changes
-  useEffect(() => {
-    const handleStorageChange = (e) => {
-      if (e.key === 'channelbi-user') {
-        try {
-          const newUser = e.newValue ? JSON.parse(e.newValue) : null;
-          setUser(newUser);
-        } catch (err) {
-          setUser(null);
-        }
+  const handleStorageChange = useCallback((e) => {
+    if (e.key === 'channelbi-user') {
+      try {
+        const newUser = e.newValue ? JSON.parse(e.newValue) : null;
+        setUser(newUser);
+      } catch (err) {
+        setUser(null);
       }
-    };
+    }
+  }, []);
+
+  useEffect(() => {
     window.addEventListener('storage', handleStorageChange);
     return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
+  }, [handleStorageChange]);
 
   const login = (email, password) => {
     // Simulated login - accept any credentials

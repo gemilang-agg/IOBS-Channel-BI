@@ -93,8 +93,8 @@ export default function LoginPage() {
               'Multi-dimensional performance analytics',
               'Risk monitoring & early warning systems',
               'Self-service reporting & custom analysis'
-            ].map((feature, i) => (
-              <div key={i} className="flex items-center gap-3 text-slate-300">
+            ].map((feature) => (
+              <div key={feature} className="flex items-center gap-3 text-slate-300">
                 <div className="w-2 h-2 rounded-full bg-blue-400" />
                 <span className="text-sm">{feature}</span>
               </div>

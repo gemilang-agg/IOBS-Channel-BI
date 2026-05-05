@@ -30,6 +30,24 @@ import {
 import { Badge } from '../components/ui/badge';
 import { cn } from '../lib/utils';
 
+const getRateBadgeClass = (rate) => {
+  if (rate >= 80) return "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400";
+  if (rate >= 70) return "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400";
+  return "bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400";
+};
+
+const getNplBadgeClass = (npl) => {
+  if (npl <= 2) return "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400";
+  if (npl <= 3) return "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400";
+  return "bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400";
+};
+
+const getNplStatusLabel = (npl) => {
+  if (npl <= 2) return 'Low Risk';
+  if (npl <= 3) return 'Medium';
+  return 'High Risk';
+};
+
 export default function RiskDashboard() {
   const kpiIcons = {
     'PAR 30': AlertTriangle,
@@ -45,12 +63,7 @@ export default function RiskDashboard() {
     { key: 'collected', label: 'Collected (M)', type: 'number', align: 'right' },
     { key: 'target', label: 'Target (M)', type: 'number', align: 'right' },
     { key: 'rate', label: 'Recovery Rate', align: 'center', render: (value) => (
-      <Badge className={cn(
-        "font-mono",
-        value >= 80 ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400" :
-        value >= 70 ? "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400" :
-        "bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400"
-      )}>
+      <Badge className={cn("font-mono", getRateBadgeClass(value))}>
         {value}%
       </Badge>
     )}
@@ -66,12 +79,8 @@ export default function RiskDashboard() {
       label: 'Status', 
       align: 'center',
       render: (_, row) => (
-        <Badge className={cn(
-          row.npl <= 2 ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400" :
-          row.npl <= 3 ? "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400" :
-          "bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400"
-        )}>
-          {row.npl <= 2 ? 'Low Risk' : row.npl <= 3 ? 'Medium' : 'High Risk'}
+        <Badge className={cn(getNplBadgeClass(row.npl))}>
+          {getNplStatusLabel(row.npl)}
         </Badge>
       )
     }

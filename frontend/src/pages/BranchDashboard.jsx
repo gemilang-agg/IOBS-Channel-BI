@@ -31,6 +31,18 @@ import {
 import { Badge } from '../components/ui/badge';
 import { cn } from '../lib/utils';
 
+const getNpsBadgeClass = (nps) => {
+  if (nps >= 75) return "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400";
+  if (nps >= 60) return "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400";
+  return "bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400";
+};
+
+const getAchievementColor = (achievement) => {
+  if (achievement >= 100) return '#10B981';
+  if (achievement >= 90) return '#F59E0B';
+  return '#EF4444';
+};
+
 export default function BranchDashboard() {
   const kpiIcons = {
     'Target Achievement': Target,
@@ -47,12 +59,7 @@ export default function BranchDashboard() {
     { key: 'deposits', label: 'Deposits (M)', type: 'number', align: 'right' },
     { key: 'loans', label: 'Loans', type: 'number', align: 'right' },
     { key: 'nps', label: 'NPS', align: 'center', render: (value) => (
-      <Badge className={cn(
-        "font-mono",
-        value >= 75 ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400" :
-        value >= 60 ? "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400" :
-        "bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400"
-      )}>
+      <Badge className={cn("font-mono", getNpsBadgeClass(value))}>
         {value}
       </Badge>
     )}
@@ -185,11 +192,11 @@ export default function BranchDashboard() {
                   radius={[0, 4, 4, 0]}
                   barSize={20}
                 >
-                  {branchLeaderboard.map((entry, index) => (
+                  {branchLeaderboard.map((entry) => (
                     <Bar 
-                      key={`bar-${index}`} 
+                      key={`bar-${entry.branch}`} 
                       dataKey="achievement"
-                      fill={entry.achievement >= 100 ? '#10B981' : entry.achievement >= 90 ? '#F59E0B' : '#EF4444'} 
+                      fill={getAchievementColor(entry.achievement)} 
                     />
                   ))}
                 </Bar>

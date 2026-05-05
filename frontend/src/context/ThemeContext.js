@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
 const ThemeContext = createContext();
 
@@ -8,16 +8,20 @@ export function ThemeProvider({ children }) {
     return saved ? saved === 'dark' : false;
   });
 
-  useEffect(() => {
-    localStorage.setItem('channelbi-theme', isDarkMode ? 'dark' : 'light');
-    if (isDarkMode) {
+  const applyTheme = useCallback((dark) => {
+    localStorage.setItem('channelbi-theme', dark ? 'dark' : 'light');
+    if (dark) {
       document.documentElement.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
     }
-  }, [isDarkMode]);
+  }, []);
 
-  const toggleTheme = () => setIsDarkMode(!isDarkMode);
+  useEffect(() => {
+    applyTheme(isDarkMode);
+  }, [isDarkMode, applyTheme]);
+
+  const toggleTheme = useCallback(() => setIsDarkMode(prev => !prev), []);
 
   return (
     <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>

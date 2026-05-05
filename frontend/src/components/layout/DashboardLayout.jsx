@@ -3,7 +3,7 @@ import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';
 import { useAuth } from '../../context/AuthContext';
 import { useSidebar } from '../../context/SidebarContext';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { cn } from '../../lib/utils';
 
 export function DashboardLayout() {
@@ -11,19 +11,18 @@ export function DashboardLayout() {
   const { collapsed } = useSidebar();
   const [isKiosk, setIsKiosk] = useState(false);
 
-  useEffect(() => {
-    // Detect kiosk mode based on screen size or URL param
-    const checkKioskMode = () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const kioskParam = urlParams.get('kiosk') === 'true';
-      const isLargeScreen = window.innerWidth >= 1920;
-      setIsKiosk(kioskParam || isLargeScreen);
-    };
+  const checkKioskMode = useCallback(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const kioskParam = urlParams.get('kiosk') === 'true';
+    const isLargeScreen = window.innerWidth >= 1920;
+    setIsKiosk(kioskParam || isLargeScreen);
+  }, []);
 
+  useEffect(() => {
     checkKioskMode();
     window.addEventListener('resize', checkKioskMode);
     return () => window.removeEventListener('resize', checkKioskMode);
-  }, []);
+  }, [checkKioskMode]);
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;

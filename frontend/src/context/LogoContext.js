@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
 const LogoContext = createContext();
 
@@ -8,13 +8,17 @@ export function LogoProvider({ children }) {
     return saved || null;
   });
 
-  useEffect(() => {
-    if (customLogo) {
-      localStorage.setItem('channelbi-logo', customLogo);
+  const syncLogo = useCallback((logo) => {
+    if (logo) {
+      localStorage.setItem('channelbi-logo', logo);
     } else {
       localStorage.removeItem('channelbi-logo');
     }
-  }, [customLogo]);
+  }, []);
+
+  useEffect(() => {
+    syncLogo(customLogo);
+  }, [customLogo, syncLogo]);
 
   const uploadLogo = (file) => {
     return new Promise((resolve, reject) => {
