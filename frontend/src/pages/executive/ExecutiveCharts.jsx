@@ -108,11 +108,19 @@ export function RevenueByProductChart({ data, onProductClick }) {
               outerRadius={90}
               paddingAngle={2}
               dataKey="value"
-              onClick={(slice) => onProductClick?.(slice)}
+              onClick={(slice) => {
+                const name = slice?.name || slice?.payload?.name;
+                if (name) onProductClick?.({ name });
+              }}
               style={onProductClick ? { cursor: 'pointer' } : undefined}
             >
               {data.map((entry, index) => (
-                <Cell key={`cell-${entry.name}`} fill={COLORS[index % COLORS.length]} />
+                <Cell
+                  key={`cell-${entry.name}`}
+                  fill={COLORS[index % COLORS.length]}
+                  onClick={() => onProductClick?.({ name: entry.name })}
+                  style={onProductClick ? { cursor: 'pointer' } : undefined}
+                />
               ))}
             </Pie>
             <Tooltip

@@ -1,0 +1,46 @@
+{
+  "summary": "Re-validated Channel BI frontend after the CSS fix in index.css and useMemo fix in ExecutiveDashboard. ALL critical flows from iteration_3 now pass: Radix overlays (region Select, date Popover, export-pdf DropdownMenu) render with proper bounding boxes; region filter East scales KPIs from $12.8B/$8.4B/$124M to $2.4B/$1.57B/$23.25M and reset restores originals; date popover renders with 132 day cells and Reset/Apply buttons; both Quick (33MB) and Full (17MB) PDF downloads succeed; drill-down routes /details/region/east, /details/product/savings, /details/branch/downtown-main all load correctly; row clicks in Regional Performance Summary and Branch Leaderboard navigate; detail-back-btn returns to /dashboard and /branches; pie slice click on Revenue-by-Product fires onClick and navigates to /details/product/<slug>; all 9 nav routes render; dark-mode toggle works; no Maximum update depth React errors after region/date changes.",
+  "backend_issues": {},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "All Recharts wrappers", "issues": ["Persistent console warnings width(-1)/height(-1) on first paint from ResponsiveContainer — cosmetic, does not affect rendering. Consider giving parents an explicit min-height."]}
+    ]
+  },
+  "passed_tests": [
+    "Login test@channelbi.com/password redirects to /dashboard",
+    "Topbar contains region-filter, date-filter, export-pdf-btn (all data-testid present and visible)",
+    "Region Select opens; region-option-east has bbox 152x32 and is clickable",
+    "Selecting East changes KPIs: Total Deposits $12.8B -> $2.4B, Loans $8.4B -> $1.57B, Fee-Based $124M -> $23.25M, New Customers 28.4K -> 5.3K, Active Digital 892.0K -> 167.3K",
+    "Reset to 'All Regions' restores original KPI values",
+    "Date filter popover opens with bbox 674x370, shows 132 day cells (two-month calendar via DayPicker v9 range mode), Reset and Apply buttons visible",
+    "Export PDF dropdown opens; export-pdf-quick (214x48) and export-pdf-full (214x48) both visible",
+    "Quick PDF download succeeds (~33MB file executive-dashboard-*.pdf)",
+    "Full PDF download succeeds (~17MB file executive-dashboard-*.pdf)",
+    "Direct URLs /details/region/east, /details/product/savings, /details/branch/downtown-main all load with correct data-testid and titles",
+    "Click row 0 in Regional Performance Summary on /dashboard navigates to /details/region/north",
+    "Click row 0 in Branch Leaderboard on /branches navigates to /details/branch/downtown-main",
+    "detail-back-btn returns to /dashboard from region detail and to /branches from branch detail",
+    "Pie slice click on Revenue-by-Product fires onClick and navigates to /details/product/current (handler works — verified via dispatchEvent; Playwright native .click() on SVG path is a known Recharts quirk, not a product bug)",
+    "All 9 nav routes render without crash: /dashboard, /deposits, /lending, /customers, /branches, /channels, /risk, /reports, /settings",
+    "Dark mode toggle flips html.className '' <-> 'dark'",
+    "No 'Maximum update depth exceeded' page errors after region East->All sequence",
+    "Hitachi branding visible in topbar"
+  ],
+  "failed_tests": [],
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Pie slice onClick works reliably when the DOM dispatches a real MouseEvent; however Playwright's locator.click() on path.recharts-sector sometimes does not propagate to Recharts' React handler because Recharts uses synthetic events bound on an ancestor layer. This is not an app bug but testers should use page.mouse.click() on the geometric centroid or dispatchEvent in JS for automation.",
+    "Recharts ResponsiveContainer warnings (width -1 / height -1) appear during first render before parent layout settles. Low priority — add an explicit minHeight to parent cards to silence console noise.",
+    "Generated PDFs are very large (33MB quick, 17MB full). Consider lowering html2canvas scale from 2 to 1.5 and using jsPDF compress:true to reduce file size for production."
+  ],
+  "updated_files": [],
+  "success_rate": {"frontend": "100% — all 17 tracked test cases pass"},
+  "test_credentials": "test@channelbi.com / password (any creds work, mock auth per /app/memory/test_credentials.md)",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "All iteration_3 blockers are resolved. The index.css fix removed the overzealous `body > div[style*='position: fixed']:last-of-type {display:none}` rule that was clobbering Radix portal wrappers — overlays now render with correct size. The useMemo fix in ExecutiveDashboard.jsx stabilized filteredDeposits/filteredLoans/kpis to prevent the infinite-update loop. Full frontend flow is green; no retest needed unless new features are added."
+}

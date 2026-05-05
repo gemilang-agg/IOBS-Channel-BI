@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Wallet, 
@@ -53,10 +53,10 @@ export default function ExecutiveDashboard() {
   const { dateRange, region } = useFilters();
   const { registerExportMeta } = useExportMeta();
 
-  const filteredDeposits = filterByDateRange(depositTrendData, dateRange);
-  const filteredLoans = filterByDateRange(loanTrendData, dateRange);
-  const filteredRegion = applyFilters(regionPerformance, { region });
-  const kpis = scaleKpisByRegion(executiveKPIs, region, regionPerformance);
+  const filteredDeposits = useMemo(() => filterByDateRange(depositTrendData, dateRange), [dateRange]);
+  const filteredLoans = useMemo(() => filterByDateRange(loanTrendData, dateRange), [dateRange]);
+  const filteredRegion = useMemo(() => applyFilters(regionPerformance, { region }), [region]);
+  const kpis = useMemo(() => scaleKpisByRegion(executiveKPIs, region, regionPerformance), [region]);
 
   useEffect(() => {
     registerExportMeta({
