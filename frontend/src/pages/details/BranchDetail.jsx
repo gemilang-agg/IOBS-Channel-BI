@@ -63,6 +63,11 @@ export default function BranchDetail() {
         subtitle={`Rank #${branch.rank} · Branch deep-dive`}
         backTo="/branches"
         backLabel="Back to Branches"
+        breadcrumbs={[
+          { label: 'Branches', to: '/branches' },
+          { label: 'Leaderboard', to: '/branches' },
+          { label: branch.branch }
+        ]}
       />
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

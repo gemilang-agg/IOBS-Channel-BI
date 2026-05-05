@@ -81,6 +81,11 @@ export default function ProductDetail() {
       <DetailPageHeader
         title={`${product.name} Product`}
         subtitle="Revenue and distribution deep-dive"
+        breadcrumbs={[
+          { label: 'Executive', to: '/dashboard' },
+          { label: 'Revenue by Product', to: '/dashboard' },
+          { label: product.name }
+        ]}
       />
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

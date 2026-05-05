@@ -1,3 +1,72 @@
+/**
+ * Mock-data is anchored to calendar year 2024. Presets resolve dates relative to
+ * the data anchor (Dec 31, 2024) so the dashboard stays demo-able without real-time data.
+ */
+const ANCHOR = new Date(2024, 11, 31); // Dec 31, 2024
+
+const subDays = (d, n) => {
+  const x = new Date(d);
+  x.setDate(x.getDate() - n);
+  return x;
+};
+
+export const DATE_PRESETS = [
+  {
+    id: 'last-7',
+    label: 'Last 7 Days',
+    range: () => ({ from: subDays(ANCHOR, 6), to: ANCHOR })
+  },
+  {
+    id: 'last-30',
+    label: 'Last 30 Days',
+    range: () => ({ from: subDays(ANCHOR, 29), to: ANCHOR })
+  },
+  {
+    id: 'mtd',
+    label: 'Month to Date',
+    range: () => ({ from: new Date(ANCHOR.getFullYear(), ANCHOR.getMonth(), 1), to: ANCHOR })
+  },
+  {
+    id: 'qtd',
+    label: 'This Quarter',
+    range: () => {
+      const q = Math.floor(ANCHOR.getMonth() / 3);
+      return {
+        from: new Date(ANCHOR.getFullYear(), q * 3, 1),
+        to: ANCHOR
+      };
+    }
+  },
+  {
+    id: 'last-6m',
+    label: 'Last 6 Months',
+    range: () => ({
+      from: new Date(ANCHOR.getFullYear(), ANCHOR.getMonth() - 5, 1),
+      to: ANCHOR
+    })
+  },
+  {
+    id: 'ytd',
+    label: 'Year to Date',
+    range: () => ({ from: new Date(ANCHOR.getFullYear(), 0, 1), to: ANCHOR })
+  }
+];
+
+const sameDay = (a, b) =>
+  a && b &&
+  a.getFullYear() === b.getFullYear() &&
+  a.getMonth() === b.getMonth() &&
+  a.getDate() === b.getDate();
+
+export function getActivePresetId(range) {
+  if (!range?.from || !range?.to) return null;
+  for (const preset of DATE_PRESETS) {
+    const { from, to } = preset.range();
+    if (sameDay(from, range.from) && sameDay(to, range.to)) return preset.id;
+  }
+  return null;
+}
+
 const MONTH_INDEX = {
   Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
   Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11

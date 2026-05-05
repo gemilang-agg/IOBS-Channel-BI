@@ -83,6 +83,11 @@ export default function RegionDetail() {
       <DetailPageHeader
         title={`${regionName} Region`}
         subtitle="Deep-dive performance for this region"
+        breadcrumbs={[
+          { label: 'Executive', to: '/dashboard' },
+          { label: 'Regions', to: '/dashboard' },
+          { label: `${regionName} Region` }
+        ]}
       />
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

@@ -59,6 +59,14 @@ Create a modern web-based Business Intelligence dashboard mockup for a Retail Ba
 ### P0 (Critical) - NONE
 All core functionality implemented
 
+### Polish (Feb 5, 2026)
+- ✅ **Date-range presets** — Quick Ranges rail in popover: Last 7 Days, Last 30 Days, Month to Date, This Quarter, Last 6 Months, Year to Date. Active preset highlighted in blue; topbar label shows preset name (e.g., "Year to Date") when one is active. Anchored to Dec 31, 2024 (mock data anchor).
+- ✅ **Cross-dashboard breadcrumbs** — Detail pages now render breadcrumb trails:
+  - Region: `Home › Executive › Regions › <region>`
+  - Product: `Home › Executive › Revenue by Product › <product>`
+  - Branch: `Home › Branches › Leaderboard › <branch>`
+  Each crumb is a clickable Link; current page renders as bold text.
+
 ### Interactive Features (Feb 5, 2026)
 - ✅ **Drill-down detail pages** — clicking rows in Regional Performance, Branch Leaderboard, or pie slices in Revenue-by-Product navigates to dedicated `/details/region/:region`, `/details/product/:product`, `/details/branch/:branch` pages with their own KPIs, charts, and tables
 - ✅ **Date-range filter** — popover with two-month calendar (react-day-picker v9, range mode) in Topbar; filters all monthly trend charts across dashboards (Executive, Deposits, Lending, Customer, Channel, Risk, Branches)
